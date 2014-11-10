@@ -1,0 +1,292 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>ExecuteOnCondor</title><meta name="generator" content="MATLAB 8.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-11-10"><meta name="DC.source" content="ExecuteOnCondor.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Initializing variables.</a></li><li><a href="#3">Adding necessary paths.</a></li><li><a href="#4">Organizing input and command.</a></li><li><a href="#5">Organizing the output and condor files.</a></li><li><a href="#6">Submit condor jobs.</a></li></ul></div><pre class="codeinput"><span class="comment">% Makesure your Matlab session is started on a valid CHTC submit</span>
+<span class="comment">% node like (For e.g., medusa.keck.waisman.wisc.edu and submit.chtc.wisc.edu).</span>
+
+clear <span class="string">all</span>;
+close <span class="string">all</span>;
+</pre><h2>Initializing variables.<a name="2"></a></h2><pre class="codeinput">workshopRoot = <span class="string">'/study/aa-scratch/Nagesh/CondorWorkshop'</span>;
+CHTCFilesRoot = sprintf(<span class="string">'%s/CHTCFiles'</span>, workshopRoot);
+compiledCodeRoot = sprintf(<span class="string">'%s/VIPRIRExample/CHTCCompile'</span>, workshopRoot);
+compiledCodeName = <span class="string">'fit_t1_alpha_beta_irssCondor'</span>;
+
+VIPRIRDataRoot = sprintf(<span class="string">'%s/VIPRIRExample/FRAMES/'</span>, workshopRoot);
+<span class="comment">% Load relevant information about the frames.</span>
+load([VIPRIRDataRoot <span class="string">'info_file_vox_old.mat'</span>]);
+happyFlag = happy;
+numSlices = 240;
+startSlice = 115;
+endSlice = 116;
+</pre><h2>Adding necessary paths.<a name="3"></a></h2><pre class="codeinput">addpath(sprintf(<span class="string">'%s/Utilities'</span>, workshopRoot));
+addpath(compiledCodeRoot);
+</pre><h2>Organizing input and command.<a name="4"></a></h2><p>Creating the root directory.</p><pre class="codeinput">inputRoot = sprintf(<span class="string">'/scratch/%s'</span>, compiledCodeName);
+<span class="keyword">if</span>(~exist(inputRoot, <span class="string">'dir'</span>))
+    RunOnUnix(sprintf(<span class="string">'mkdir %s'</span>, inputRoot));
+<span class="keyword">end</span>
+
+<span class="comment">% Creating directories for each job.</span>
+<span class="comment">% Create one job per slice.</span>
+<span class="comment">% Clean first.</span>
+RunOnUnix(sprintf(<span class="string">'rm -rf %s/Job*'</span>, inputRoot));
+
+<span class="keyword">for</span> sliceNum = startSlice:endSlice
+    <span class="comment">% Load the VIPRIR slice for all frames.</span>
+    ir_imgs = real(read_cpx_viprir_imgs(happyFlag, sliceNum, VIPRIRDataRoot));
+    <span class="comment">% Load the SPGR slice for all alphas.</span>
+    ss_imgs = zeros(size(ir_imgs,1), size(ir_imgs,2), numel(alpha_ss));
+    <span class="keyword">for</span> x=1:numel(alpha_ss)
+        fname = [VIPRIRDataRoot sprintf(<span class="string">'SS_%02d.cpx'</span>,alpha_ss(x))];
+        ss_imgs(:,:,x) = real(read_cpx_img_slice(happyFlag, sliceNum, fname));
+    <span class="keyword">end</span>
+    <span class="comment">% Load the mask slice.</span>
+    mask_name = [VIPRIRDataRoot sprintf(<span class="string">'Complex_Image_Frame_%03d_V_%03d.dat'</span>,0,0)];
+    mask = create_mask( abs(real(read_cpx_img(happyFlag.rcyres,happyFlag.rcxres,happyFlag.rczres,mask_name))),threshold,fsize );
+    mask = mask(:,:,sliceNum);
+
+    RunOnUnix(sprintf(<span class="string">'mkdir %s/Job%d'</span>, inputRoot, sliceNum));
+
+    inputParametersFile = sprintf(<span class="string">'%s/Job%d/inputParameters.mat'</span>, inputRoot, sliceNum);
+    save(inputParametersFile, <span class="string">'ir_imgs'</span>, <span class="string">'ss_imgs'</span>, <span class="string">'mask'</span>);
+<span class="keyword">end</span>
+fprintf(<span class="string">'\n Data preparation complete!'</span>);
+
+<span class="comment">% Copying the compiled executable, happyFlag and alpha_ss to the shared directory.</span>
+RunOnUnix(sprintf(<span class="string">'rm -rf %s/shared'</span>, inputRoot));
+RunOnUnix(sprintf(<span class="string">'mkdir %s/shared'</span>, inputRoot));
+RunOnUnix(sprintf(<span class="string">'cp %s/%s %s/shared'</span>, compiledCodeRoot, compiledCodeName, inputRoot));
+sharedParametersFile = sprintf(<span class="string">'%s/shared/sharedParameters.mat'</span>, inputRoot);
+save(sharedParametersFile, <span class="string">'happyFlag'</span>, <span class="string">'alpha_ss'</span>);
+</pre><pre class="codeoutput">
+ rm -rf /scratch/fit_t1_alpha_beta_irssCondor/Job*
+ mkdir /scratch/fit_t1_alpha_beta_irssCondor/Job115
+ mkdir /scratch/fit_t1_alpha_beta_irssCondor/Job116
+ Data preparation complete!
+ rm -rf /scratch/fit_t1_alpha_beta_irssCondor/shared
+ mkdir /scratch/fit_t1_alpha_beta_irssCondor/shared
+ cp /study/aa-scratch/Nagesh/CondorWorkshop/VIPRIRExample/CHTCCompile/fit_t1_alpha_beta_irssCondor /scratch/fit_t1_alpha_beta_irssCondor/shared</pre><h2>Organizing the output and condor files.<a name="5"></a></h2><p>Creating the output directory.</p><pre class="codeinput">outputRoot = sprintf(<span class="string">'/scratch/%sOutput'</span>, compiledCodeName);
+RunOnUnix(sprintf(<span class="string">'rm -rf %s'</span>, outputRoot));
+
+<span class="comment">% Copying relevant CHTC code over to parent directory of the input</span>
+<span class="comment">% directory.</span>
+RunOnUnix(sprintf(<span class="string">'cp %s/mkdag /scratch'</span>, CHTCFilesRoot));
+RunOnUnix(sprintf(<span class="string">'cp %s/process.template /scratch'</span>, CHTCFilesRoot));
+RunOnUnix(sprintf(<span class="string">'cp %s/chtcjobwrapper /scratch'</span>, CHTCFilesRoot));
+RunOnUnix(sprintf(<span class="string">'cp %s/postjob.template /scratch'</span>, CHTCFilesRoot));
+
+<span class="comment">% Moving to the parent directory of the input directory (because of the way mkdag prepends to the paths).</span>
+cd(<span class="string">'/scratch'</span>);
+<span class="comment">% Generating the DAG.</span>
+RunOnUnix(sprintf(<span class="string">'./mkdag --cmdtorun=%s --data=%s --dagdir=%sOutput --pattern=T1RhoAlphaMapBetaMap.mat --parg=inputParameters.mat --parg=sharedParameters.mat --type=Matlab'</span>, compiledCodeName, compiledCodeName, compiledCodeName));
+</pre><pre class="codeoutput">
+ rm -rf /scratch/fit_t1_alpha_beta_irssCondorOutput
+ cp /study/aa-scratch/Nagesh/CondorWorkshop/CHTCFiles/mkdag /scratch
+ cp /study/aa-scratch/Nagesh/CondorWorkshop/CHTCFiles/process.template /scratch
+ cp /study/aa-scratch/Nagesh/CondorWorkshop/CHTCFiles/chtcjobwrapper /scratch
+ cp /study/aa-scratch/Nagesh/CondorWorkshop/CHTCFiles/postjob.template /scratch
+ ./mkdag --cmdtorun=fit_t1_alpha_beta_irssCondor --data=fit_t1_alpha_beta_irssCondor --dagdir=fit_t1_alpha_beta_irssCondorOutput --pattern=T1RhoAlphaMapBetaMap.mat --parg=inputParameters.mat --parg=sharedParameters.mat --type=MatlabNote: When you do this in conjunction with --resultdir,
+
+	       all files will go into resultdir in folders labeled 
+
+           after the input folder for the job. Any file matching
+
+           the pattern will be collected as results for you.
+
+           If you need multiple patterns use multiple use of
+
+           --patern=
+
+           
+           --pattern=sun --patter=moon --pattern=nut
+Program args requested: (inputParameters.mat sharedParameters.mat )
+There are &lt;0&gt; preescript args
+Path to input folders is "/scratch/fit_t1_alpha_beta_irssCondor"
+Path to output folders is "/scratch/fit_t1_alpha_beta_irssCondorOutput"
+.looping: pargindex:0 pargcount:2 
+Arg is inputParameters.mat
+looping: pargindex:1 pargcount:2 
+Arg is sharedParameters.mat
+Program args requested: (inputParameters.mat sharedParameters.mat )
+.looping: pargindex:0 pargcount:2 
+Arg is inputParameters.mat
+looping: pargindex:1 pargcount:2 
+Arg is sharedParameters.mat
+Program args requested: (inputParameters.mat sharedParameters.mat )
+
+All done!
+
+You should now be able to submit your jobs with the following commands:
+
+  cd fit_t1_alpha_beta_irssCondorOutput
+  condor_submit_dag mydag.dag
+
+All done!
+</pre><h2>Submit condor jobs.<a name="6"></a></h2><p>Submitting the DAG.</p><pre class="codeinput">cd(sprintf(<span class="string">'%s'</span>, outputRoot));
+RunOnUnix(sprintf(<span class="string">'condor_submit_dag mydag.dag'</span>));
+</pre><pre class="codeoutput">
+ condor_submit_dag mydag.dag
+-----------------------------------------------------------------------
+File for submitting this DAG to Condor           : mydag.dag.condor.sub
+Log of DAGMan debugging messages                 : mydag.dag.dagman.out
+Log of Condor library output                     : mydag.dag.lib.out
+Log of Condor library error messages             : mydag.dag.lib.err
+Log of the life of condor_dagman itself          : mydag.dag.dagman.log
+
+Submitting job(s).
+1 job(s) submitted to cluster 230150.
+-----------------------------------------------------------------------
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+% Makesure your Matlab session is started on a valid CHTC submit
+% node like (For e.g., medusa.keck.waisman.wisc.edu and submit.chtc.wisc.edu).
+
+clear all;
+close all;
+
+%% Initializing variables.
+workshopRoot = '/study/aa-scratch/Nagesh/CondorWorkshop';
+CHTCFilesRoot = sprintf('%s/CHTCFiles', workshopRoot);
+compiledCodeRoot = sprintf('%s/VIPRIRExample/CHTCCompile', workshopRoot);
+compiledCodeName = 'fit_t1_alpha_beta_irssCondor';
+
+VIPRIRDataRoot = sprintf('%s/VIPRIRExample/FRAMES/', workshopRoot);
+% Load relevant information about the frames.
+load([VIPRIRDataRoot 'info_file_vox_old.mat']);
+happyFlag = happy;
+numSlices = 240;
+startSlice = 115;
+endSlice = 116;
+
+%% Adding necessary paths.
+addpath(sprintf('%s/Utilities', workshopRoot));
+addpath(compiledCodeRoot);
+
+%% Organizing input and command.
+% Creating the root directory.
+inputRoot = sprintf('/scratch/%s', compiledCodeName);
+if(~exist(inputRoot, 'dir'))
+    RunOnUnix(sprintf('mkdir %s', inputRoot));
+end
+
+% Creating directories for each job.
+% Create one job per slice.
+% Clean first.
+RunOnUnix(sprintf('rm -rf %s/Job*', inputRoot));
+
+for sliceNum = startSlice:endSlice
+    % Load the VIPRIR slice for all frames.
+    ir_imgs = real(read_cpx_viprir_imgs(happyFlag, sliceNum, VIPRIRDataRoot));
+    % Load the SPGR slice for all alphas.
+    ss_imgs = zeros(size(ir_imgs,1), size(ir_imgs,2), numel(alpha_ss));
+    for x=1:numel(alpha_ss)
+        fname = [VIPRIRDataRoot sprintf('SS_%02d.cpx',alpha_ss(x))];
+        ss_imgs(:,:,x) = real(read_cpx_img_slice(happyFlag, sliceNum, fname));
+    end
+    % Load the mask slice.
+    mask_name = [VIPRIRDataRoot sprintf('Complex_Image_Frame_%03d_V_%03d.dat',0,0)];
+    mask = create_mask( abs(real(read_cpx_img(happyFlag.rcyres,happyFlag.rcxres,happyFlag.rczres,mask_name))),threshold,fsize );
+    mask = mask(:,:,sliceNum);
+    
+    RunOnUnix(sprintf('mkdir %s/Job%d', inputRoot, sliceNum));
+    
+    inputParametersFile = sprintf('%s/Job%d/inputParameters.mat', inputRoot, sliceNum);
+    save(inputParametersFile, 'ir_imgs', 'ss_imgs', 'mask');
+end
+fprintf('\n Data preparation complete!');
+
+% Copying the compiled executable, happyFlag and alpha_ss to the shared directory.
+RunOnUnix(sprintf('rm -rf %s/shared', inputRoot));
+RunOnUnix(sprintf('mkdir %s/shared', inputRoot));
+RunOnUnix(sprintf('cp %s/%s %s/shared', compiledCodeRoot, compiledCodeName, inputRoot));
+sharedParametersFile = sprintf('%s/shared/sharedParameters.mat', inputRoot);
+save(sharedParametersFile, 'happyFlag', 'alpha_ss');
+
+%% Organizing the output and condor files.
+% Creating the output directory.
+outputRoot = sprintf('/scratch/%sOutput', compiledCodeName);
+RunOnUnix(sprintf('rm -rf %s', outputRoot));
+
+% Copying relevant CHTC code over to parent directory of the input
+% directory.
+RunOnUnix(sprintf('cp %s/mkdag /scratch', CHTCFilesRoot));
+RunOnUnix(sprintf('cp %s/process.template /scratch', CHTCFilesRoot));
+RunOnUnix(sprintf('cp %s/chtcjobwrapper /scratch', CHTCFilesRoot));
+RunOnUnix(sprintf('cp %s/postjob.template /scratch', CHTCFilesRoot));
+
+% Moving to the parent directory of the input directory (because of the way mkdag prepends to the paths).
+cd('/scratch');
+% Generating the DAG.
+RunOnUnix(sprintf('./mkdag REPLACE_WITH_DASH_DASHcmdtorun=%s REPLACE_WITH_DASH_DASHdata=%s REPLACE_WITH_DASH_DASHdagdir=%sOutput REPLACE_WITH_DASH_DASHpattern=T1RhoAlphaMapBetaMap.mat REPLACE_WITH_DASH_DASHparg=inputParameters.mat REPLACE_WITH_DASH_DASHparg=sharedParameters.mat REPLACE_WITH_DASH_DASHtype=Matlab', compiledCodeName, compiledCodeName, compiledCodeName));
+
+%% Submit condor jobs.
+% Submitting the DAG.
+cd(sprintf('%s', outputRoot));
+RunOnUnix(sprintf('condor_submit_dag mydag.dag'));
+
+##### SOURCE END #####
+--></body></html>

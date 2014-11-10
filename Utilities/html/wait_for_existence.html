@@ -1,0 +1,218 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>wait_for_existence</title><meta name="generator" content="MATLAB 8.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-11-08"><meta name="DC.source" content="wait_for_existence.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="keyword">function</span> waited = wait_for_existence(name,type,pause_time,max_time)
+<span class="comment">%</span>
+<span class="comment">% Wait until NAME exists (up to MAX_TIME seconds)</span>
+<span class="comment">%</span>
+<span class="comment">%</span>
+<span class="comment">%USAGE</span>
+<span class="comment">%-----</span>
+<span class="comment">% waited = wait_for_existence(name,type,pause_time,max_time)</span>
+<span class="comment">%</span>
+<span class="comment">%</span>
+<span class="comment">%INPUT</span>
+<span class="comment">%-----</span>
+<span class="comment">% - NAME      : name of the function, class, directory, file or variable</span>
+<span class="comment">%   (must be a string)</span>
+<span class="comment">% - TYPE      : 'builtin', 'class', 'dir', 'file' or 'var'</span>
+<span class="comment">% - PAUSE_TIME: amount of time to wait in the pauses (in seconds)</span>
+<span class="comment">% - MAX_TIME  : maximum amount of time to wait (in seconds)</span>
+<span class="comment">%</span>
+<span class="comment">%</span>
+<span class="comment">%OUTPUT</span>
+<span class="comment">%------</span>
+<span class="comment">% - WAITED: 0 (if NAME exists) or 1 (if NAME does not exist and MAX_TIME</span>
+<span class="comment">%   has been elapsed)</span>
+<span class="comment">%</span>
+<span class="comment">%</span>
+<span class="comment">%EXAMPLE</span>
+<span class="comment">%-------</span>
+<span class="comment">% waited = wait_for_existence('new_dir','dir',0.2,2)</span>
+<span class="comment">%</span>
+<span class="comment">%</span>
+<span class="comment">% See also EXIST</span>
+
+<span class="comment">% Guilherme Coco Beltramini (guicoco@gmail.com)</span>
+<span class="comment">% 2013-Jan-07, 03:17 pm</span>
+
+<span class="keyword">if</span> ~ischar(name)
+    error(<span class="string">'NAME must be a string'</span>)
+<span class="keyword">end</span>
+
+<span class="keyword">switch</span> type
+    <span class="keyword">case</span> <span class="string">'builtin'</span>
+        status = 5;
+    <span class="keyword">case</span> <span class="string">'class'</span>
+        status = 8;
+    <span class="keyword">case</span> <span class="string">'dir'</span>
+        status = 7;
+    <span class="keyword">case</span> <span class="string">'file'</span>
+        status = [2 3 4 6];
+    <span class="keyword">case</span> <span class="string">'var'</span>
+        status = 1;
+    <span class="keyword">otherwise</span>
+        error(<span class="string">'Unknown TYPE'</span>)
+<span class="keyword">end</span>
+
+tmp = 0;
+<span class="keyword">if</span> strcmp(type,<span class="string">'var'</span>) <span class="comment">% the variable is in the caller workspace</span>
+    <span class="keyword">while</span> evalin(<span class="string">'caller'</span>,sprintf(<span class="string">'exist(''%s'',''var'')~=%d'</span>,name,status)) &amp;&amp; <span class="keyword">...</span>
+            tmp&lt;max_time/pause_time
+        tmp = tmp + 1;
+        pause(pause_time)
+    <span class="keyword">end</span>
+<span class="keyword">else</span> <span class="comment">% the workspace doesn't matter</span>
+    <span class="keyword">while</span> all(exist(name,type)~=status) &amp;&amp; tmp&lt;max_time/pause_time
+        tmp = tmp + 1;
+        pause(pause_time)
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">if</span> tmp&lt;max_time/pause_time
+    waited = 0;
+<span class="keyword">else</span>
+    waited = 1;
+<span class="keyword">end</span>
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+function waited = wait_for_existence(name,type,pause_time,max_time)
+% 
+% Wait until NAME exists (up to MAX_TIME seconds)
+% 
+% 
+%USAGE
+%REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+% waited = wait_for_existence(name,type,pause_time,max_time)
+% 
+% 
+%INPUT
+%REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+% - NAME      : name of the function, class, directory, file or variable
+%   (must be a string)
+% - TYPE      : 'builtin', 'class', 'dir', 'file' or 'var'
+% - PAUSE_TIME: amount of time to wait in the pauses (in seconds)
+% - MAX_TIME  : maximum amount of time to wait (in seconds)
+% 
+% 
+%OUTPUT
+%REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+% - WAITED: 0 (if NAME exists) or 1 (if NAME does not exist and MAX_TIME
+%   has been elapsed)
+% 
+% 
+%EXAMPLE
+%REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+% waited = wait_for_existence('new_dir','dir',0.2,2)
+% 
+% 
+% See also EXIST
+
+% Guilherme Coco Beltramini (guicoco@gmail.com)
+% 2013-Jan-07, 03:17 pm
+
+if ~ischar(name)
+    error('NAME must be a string')
+end
+
+switch type
+    case 'builtin'
+        status = 5;
+    case 'class'
+        status = 8;
+    case 'dir'
+        status = 7;
+    case 'file'
+        status = [2 3 4 6];
+    case 'var'
+        status = 1;
+    otherwise
+        error('Unknown TYPE')
+end
+
+tmp = 0;
+if strcmp(type,'var') % the variable is in the caller workspace
+    while evalin('caller',sprintf('exist(''%s'',''var'')~=%d',name,status)) && ...
+            tmp<max_time/pause_time
+        tmp = tmp + 1;
+        pause(pause_time)
+    end
+else % the workspace doesn't matter
+    while all(exist(name,type)~=status) && tmp<max_time/pause_time
+        tmp = tmp + 1;
+        pause(pause_time)
+    end
+end
+
+if tmp<max_time/pause_time
+    waited = 0;
+else
+    waited = 1;
+end
+##### SOURCE END #####
+--></body></html>

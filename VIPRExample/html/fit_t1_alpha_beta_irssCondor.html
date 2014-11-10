@@ -1,0 +1,198 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>fit_t1_alpha_beta_irssCondor</title><meta name="generator" content="MATLAB 8.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-11-10"><meta name="DC.source" content="fit_t1_alpha_beta_irssCondor.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="comment">%function [T1, rho, alpha_map, beta_map] = fit_t1_alpha_beta_irss( happyFlag, ir_imgs, ss_imgs, alpha_ss, mask )</span>
+<span class="keyword">function</span> [T1, rho, alpha_map, beta_map] = fit_t1_alpha_beta_irssCondor(inputParameters, sharedParameters)
+
+<span class="comment">% Loading the input data.</span>
+load(inputParameters); <span class="comment">% ir_imgs, ss_imgs, mask</span>
+load(sharedParameters); <span class="comment">% happyFlag, alpha_ss</span>
+
+idx = find( mask &gt; 0 );
+
+opts = optimset(<span class="string">'fminsearch'</span>);
+opts.Display = <span class="string">'none'</span>;
+opts.TolFun = 1e-21;
+opts.TolX = 1e-21;
+
+predict_opts.t1_min = 50;
+predict_opts.t1_max = 5000;
+predict_opts.res = 100;
+predict_opts.num_iter = 2;
+
+beta_init = 180;
+<span class="comment">% beta_init = 145;</span>
+
+T1 = zeros(happyFlag.rcxres,happyFlag.rcyres);
+rho = zeros(happyFlag.rcxres,happyFlag.rcyres);
+alpha_map = zeros(happyFlag.rcxres,happyFlag.rcyres);
+beta_map = zeros(happyFlag.rcxres,happyFlag.rcyres);
+fprintf(<span class="string">'\n About to begin fitting...'</span>);
+<span class="keyword">for</span> pt = 1:numel(idx)
+
+    <span class="keyword">if</span>( mod( pt, floor(numel(idx)/20) ) == 0 )
+        pd = 100 * pt / numel(idx);
+        msg = sprintf(<span class="string">'%03f percent done'</span>,pd);
+        disp(msg);
+    <span class="keyword">end</span>
+
+    [yy, xx] = ind2sub( size( mask ), idx(pt) );
+    alpha = happyFlag.flip_ir;
+    ir_data = squeeze( ir_imgs(yy,xx,:) );
+
+    <span class="keyword">if</span>( numel(alpha_ss) &gt; 0 )
+        ss_data = squeeze( ss_imgs(yy,xx,:) );
+    <span class="keyword">else</span>
+        ss_data = [];
+    <span class="keyword">end</span>
+
+    [t1_initial, rho_initial] = predict_t1_rho_newer( happyFlag, alpha, ir_data, predict_opts ); <span class="comment">% SRK changed to "predict_t1_rho_newer" instead of "predict_t1_rho_new" on 07/21/2014 to handle prediction for low T1 values.</span>
+
+    <span class="keyword">if</span>( (happyFlag.real==1) &amp;&amp; (happyFlag.psir==1) )
+        ir_data = real(ir_data);
+    <span class="keyword">elseif</span>(happyFlag.psir==1)
+        ir_data = sign_data( ir_data );
+    <span class="keyword">end</span>
+
+    [fit_vals, fval, exit_flag, output] = fminsearch( @(x)viprir_sigfit_alpha_beta_ss2(x,happyFlag,ir_data,ss_data,alpha_ss),[t1_initial rho_initial 1 beta_init],opts);
+
+    T1(yy,xx) = fit_vals(1);
+    rho(yy,xx) = fit_vals(2);
+    alpha_map(yy,xx) = fit_vals(3);
+    beta_map(yy,xx) = fit_vals(4);
+<span class="keyword">end</span>
+<span class="comment">% Saving the output data.</span>
+save(<span class="string">'T1RhoAlphaMapBetaMap.mat'</span>,<span class="string">'T1'</span>, <span class="string">'rho'</span>, <span class="string">'alpha_map'</span>, <span class="string">'beta_map'</span>) ;
+<span class="keyword">return</span>
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%function [T1, rho, alpha_map, beta_map] = fit_t1_alpha_beta_irss( happyFlag, ir_imgs, ss_imgs, alpha_ss, mask )
+function [T1, rho, alpha_map, beta_map] = fit_t1_alpha_beta_irssCondor(inputParameters, sharedParameters)
+
+% Loading the input data.
+load(inputParameters); % ir_imgs, ss_imgs, mask
+load(sharedParameters); % happyFlag, alpha_ss
+
+idx = find( mask > 0 );
+
+opts = optimset('fminsearch');
+opts.Display = 'none';
+opts.TolFun = 1e-21;
+opts.TolX = 1e-21;
+
+predict_opts.t1_min = 50;
+predict_opts.t1_max = 5000;
+predict_opts.res = 100;
+predict_opts.num_iter = 2;
+
+beta_init = 180;
+% beta_init = 145;
+
+T1 = zeros(happyFlag.rcxres,happyFlag.rcyres);
+rho = zeros(happyFlag.rcxres,happyFlag.rcyres);
+alpha_map = zeros(happyFlag.rcxres,happyFlag.rcyres);
+beta_map = zeros(happyFlag.rcxres,happyFlag.rcyres);
+fprintf('\n About to begin fitting...');
+for pt = 1:numel(idx)
+    
+    if( mod( pt, floor(numel(idx)/20) ) == 0 )
+        pd = 100 * pt / numel(idx);
+        msg = sprintf('%03f percent done',pd);
+        disp(msg);
+    end
+    
+    [yy, xx] = ind2sub( size( mask ), idx(pt) );
+    alpha = happyFlag.flip_ir;
+    ir_data = squeeze( ir_imgs(yy,xx,:) );
+    
+    if( numel(alpha_ss) > 0 )
+        ss_data = squeeze( ss_imgs(yy,xx,:) );
+    else
+        ss_data = [];
+    end
+    
+    [t1_initial, rho_initial] = predict_t1_rho_newer( happyFlag, alpha, ir_data, predict_opts ); % SRK changed to "predict_t1_rho_newer" instead of "predict_t1_rho_new" on 07/21/2014 to handle prediction for low T1 values.
+    
+    if( (happyFlag.real==1) && (happyFlag.psir==1) )
+        ir_data = real(ir_data);
+    elseif(happyFlag.psir==1)
+        ir_data = sign_data( ir_data );
+    end
+    
+    [fit_vals, fval, exit_flag, output] = fminsearch( @(x)viprir_sigfit_alpha_beta_ss2(x,happyFlag,ir_data,ss_data,alpha_ss),[t1_initial rho_initial 1 beta_init],opts);
+    
+    T1(yy,xx) = fit_vals(1);
+    rho(yy,xx) = fit_vals(2);
+    alpha_map(yy,xx) = fit_vals(3);
+    beta_map(yy,xx) = fit_vals(4);
+end
+% Saving the output data.
+save('T1RhoAlphaMapBetaMap.mat','T1', 'rho', 'alpha_map', 'beta_map') ;
+return
+##### SOURCE END #####
+--></body></html>

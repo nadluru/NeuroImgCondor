@@ -1,0 +1,1891 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>ExecuteOnCondor</title><meta name="generator" content="MATLAB 8.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-11-10"><meta name="DC.source" content="ExecuteOnCondor.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Initializing variables.</a></li><li><a href="#3">Adding necessary paths.</a></li><li><a href="#4">Organizing input and command.</a></li><li><a href="#5">Organizing the output and condor files.</a></li><li><a href="#6">Submit condor jobs.</a></li><li><a href="#7">Collecting the output. (Run this part after the condor jobs are completed.)</a></li></ul></div><pre class="codeinput"><span class="comment">% Makesure your Matlab session is started on a valid CHTC submit</span>
+<span class="comment">% node like (For e.g., medusa.keck.waisman.wisc.edu and submit.chtc.wisc.edu).</span>
+
+clear <span class="string">all</span>;
+close <span class="string">all</span>;
+</pre><h2>Initializing variables.<a name="2"></a></h2><pre class="codeinput">workshopRoot = <span class="string">'/study/aa-scratch/Nagesh/CondorWorkshop'</span>;
+CHTCFilesRoot = sprintf(<span class="string">'%s/CHTCFiles'</span>, workshopRoot);
+compiledCodeRoot = sprintf(<span class="string">'%s/NODDIExample/CHTCCompile'</span>, workshopRoot);
+compiledCodeName = <span class="string">'NODDIFittingCondor'</span>;
+
+NODDIDataRoot = sprintf(<span class="string">'%s/NODDIExample/NODDI_example_dataset'</span>, workshopRoot);
+bvalFile = sprintf(<span class="string">'%s/NODDI_protocol.bval'</span>, NODDIDataRoot);
+bvecFile = sprintf(<span class="string">'%s/NODDI_protocol.bvec'</span>, NODDIDataRoot);
+dwi = sprintf(<span class="string">'%s/NODDI_DWI.hdr'</span>, NODDIDataRoot);
+mask = sprintf(<span class="string">'%s/brain_mask.hdr'</span>, NODDIDataRoot);
+
+chunkSize = 1000;
+</pre><h2>Adding necessary paths.<a name="3"></a></h2><pre class="codeinput">addpath(sprintf(<span class="string">'%s/Utilities'</span>, workshopRoot));
+addpath(compiledCodeRoot);
+</pre><pre class="codeoutput">Warning: Function isrow has the same name as a MATLAB builtin. We suggest you
+rename the function to avoid a potential name conflict. 
+Warning: Function isrow has the same name as a MATLAB builtin. We suggest you
+rename the function to avoid a potential name conflict. 
+</pre><h2>Organizing input and command.<a name="4"></a></h2><p>Creating the root directory.</p><pre class="codeinput">inputRoot = sprintf(<span class="string">'/scratch/%s'</span>, compiledCodeName);
+<span class="keyword">if</span>(~exist(inputRoot, <span class="string">'dir'</span>))
+    RunOnUnix(sprintf(<span class="string">'mkdir %s'</span>, inputRoot));
+<span class="keyword">end</span>
+
+<span class="comment">% Creating directories for each job.</span>
+<span class="comment">% Create one job per slice.</span>
+<span class="comment">% Clean first.</span>
+RunOnUnix(sprintf(<span class="string">'rm -rf %s/Job*'</span>, inputRoot));
+
+<span class="comment">%Create and chunk the ROI.</span>
+NODDIROIFile = sprintf(<span class="string">'%s/NODDIROI.mat'</span>, NODDIDataRoot);
+CreateROI(dwi, mask, NODDIROIFile);
+ChunkROICondor(NODDIROIFile, chunkSize, inputRoot, false);
+
+<span class="comment">% Copying the compiled executable, protocol and noddi (model) to the shared directory.</span>
+RunOnUnix(sprintf(<span class="string">'rm -rf %s/shared'</span>, inputRoot));
+RunOnUnix(sprintf(<span class="string">'mkdir %s/shared'</span>, inputRoot));
+RunOnUnix(sprintf(<span class="string">'cp %s/%s %s/shared'</span>, compiledCodeRoot, compiledCodeName, inputRoot));
+protocol = FSL2Protocol(bvalFile, bvecFile);
+noddi = MakeModel(<span class="string">'WatsonSHStickTortIsoV_B0'</span>);
+save(sprintf(<span class="string">'%s/shared/protocol.mat'</span>, inputRoot), <span class="string">'protocol'</span>);
+save(sprintf(<span class="string">'%s/shared/noddi.mat'</span>, inputRoot), <span class="string">'noddi'</span>);
+fprintf(<span class="string">'\n Data preparation complete!'</span>);
+</pre><pre class="codeoutput">
+ rm -rf /scratch/NODDIFittingCondor/Job*loading the DWI volume : /study/aa-scratch/Nagesh/CondorWorkshop/NODDIExample/NODDI_example_dataset/NODDI_DWI.hdr
+loading the brain mask : /study/aa-scratch/Nagesh/CondorWorkshop/NODDIExample/NODDI_example_dataset/brain_mask.hdr
+creating the output ROI ...
+saving the output ROI as /study/aa-scratch/Nagesh/CondorWorkshop/NODDIExample/NODDI_example_dataset/NODDIROI.mat
+done
+178924 of voxels to chunk
+
+Saving chunk 1 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job1
+Saving chunk 1001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job2
+Saving chunk 2001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job3
+Saving chunk 3001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job4
+Saving chunk 4001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job5
+Saving chunk 5001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job6
+Saving chunk 6001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job7
+Saving chunk 7001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job8
+Saving chunk 8001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job9
+Saving chunk 9001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job10
+Saving chunk 10001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job11
+Saving chunk 11001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job12
+Saving chunk 12001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job13
+Saving chunk 13001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job14
+Saving chunk 14001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job15
+Saving chunk 15001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job16
+Saving chunk 16001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job17
+Saving chunk 17001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job18
+Saving chunk 18001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job19
+Saving chunk 19001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job20
+Saving chunk 20001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job21
+Saving chunk 21001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job22
+Saving chunk 22001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job23
+Saving chunk 23001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job24
+Saving chunk 24001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job25
+Saving chunk 25001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job26
+Saving chunk 26001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job27
+Saving chunk 27001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job28
+Saving chunk 28001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job29
+Saving chunk 29001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job30
+Saving chunk 30001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job31
+Saving chunk 31001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job32
+Saving chunk 32001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job33
+Saving chunk 33001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job34
+Saving chunk 34001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job35
+Saving chunk 35001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job36
+Saving chunk 36001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job37
+Saving chunk 37001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job38
+Saving chunk 38001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job39
+Saving chunk 39001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job40
+Saving chunk 40001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job41
+Saving chunk 41001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job42
+Saving chunk 42001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job43
+Saving chunk 43001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job44
+Saving chunk 44001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job45
+Saving chunk 45001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job46
+Saving chunk 46001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job47
+Saving chunk 47001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job48
+Saving chunk 48001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job49
+Saving chunk 49001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job50
+Saving chunk 50001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job51
+Saving chunk 51001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job52
+Saving chunk 52001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job53
+Saving chunk 53001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job54
+Saving chunk 54001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job55
+Saving chunk 55001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job56
+Saving chunk 56001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job57
+Saving chunk 57001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job58
+Saving chunk 58001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job59
+Saving chunk 59001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job60
+Saving chunk 60001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job61
+Saving chunk 61001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job62
+Saving chunk 62001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job63
+Saving chunk 63001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job64
+Saving chunk 64001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job65
+Saving chunk 65001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job66
+Saving chunk 66001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job67
+Saving chunk 67001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job68
+Saving chunk 68001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job69
+Saving chunk 69001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job70
+Saving chunk 70001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job71
+Saving chunk 71001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job72
+Saving chunk 72001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job73
+Saving chunk 73001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job74
+Saving chunk 74001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job75
+Saving chunk 75001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job76
+Saving chunk 76001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job77
+Saving chunk 77001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job78
+Saving chunk 78001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job79
+Saving chunk 79001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job80
+Saving chunk 80001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job81
+Saving chunk 81001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job82
+Saving chunk 82001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job83
+Saving chunk 83001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job84
+Saving chunk 84001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job85
+Saving chunk 85001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job86
+Saving chunk 86001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job87
+Saving chunk 87001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job88
+Saving chunk 88001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job89
+Saving chunk 89001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job90
+Saving chunk 90001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job91
+Saving chunk 91001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job92
+Saving chunk 92001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job93
+Saving chunk 93001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job94
+Saving chunk 94001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job95
+Saving chunk 95001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job96
+Saving chunk 96001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job97
+Saving chunk 97001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job98
+Saving chunk 98001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job99
+Saving chunk 99001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job100
+Saving chunk 100001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job101
+Saving chunk 101001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job102
+Saving chunk 102001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job103
+Saving chunk 103001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job104
+Saving chunk 104001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job105
+Saving chunk 105001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job106
+Saving chunk 106001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job107
+Saving chunk 107001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job108
+Saving chunk 108001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job109
+Saving chunk 109001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job110
+Saving chunk 110001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job111
+Saving chunk 111001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job112
+Saving chunk 112001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job113
+Saving chunk 113001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job114
+Saving chunk 114001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job115
+Saving chunk 115001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job116
+Saving chunk 116001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job117
+Saving chunk 117001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job118
+Saving chunk 118001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job119
+Saving chunk 119001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job120
+Saving chunk 120001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job121
+Saving chunk 121001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job122
+Saving chunk 122001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job123
+Saving chunk 123001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job124
+Saving chunk 124001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job125
+Saving chunk 125001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job126
+Saving chunk 126001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job127
+Saving chunk 127001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job128
+Saving chunk 128001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job129
+Saving chunk 129001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job130
+Saving chunk 130001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job131
+Saving chunk 131001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job132
+Saving chunk 132001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job133
+Saving chunk 133001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job134
+Saving chunk 134001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job135
+Saving chunk 135001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job136
+Saving chunk 136001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job137
+Saving chunk 137001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job138
+Saving chunk 138001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job139
+Saving chunk 139001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job140
+Saving chunk 140001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job141
+Saving chunk 141001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job142
+Saving chunk 142001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job143
+Saving chunk 143001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job144
+Saving chunk 144001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job145
+Saving chunk 145001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job146
+Saving chunk 146001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job147
+Saving chunk 147001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job148
+Saving chunk 148001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job149
+Saving chunk 149001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job150
+Saving chunk 150001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job151
+Saving chunk 151001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job152
+Saving chunk 152001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job153
+Saving chunk 153001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job154
+Saving chunk 154001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job155
+Saving chunk 155001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job156
+Saving chunk 156001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job157
+Saving chunk 157001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job158
+Saving chunk 158001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job159
+Saving chunk 159001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job160
+Saving chunk 160001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job161
+Saving chunk 161001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job162
+Saving chunk 162001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job163
+Saving chunk 163001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job164
+Saving chunk 164001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job165
+Saving chunk 165001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job166
+Saving chunk 166001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job167
+Saving chunk 167001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job168
+Saving chunk 168001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job169
+Saving chunk 169001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job170
+Saving chunk 170001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job171
+Saving chunk 171001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job172
+Saving chunk 172001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job173
+Saving chunk 173001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job174
+Saving chunk 174001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job175
+Saving chunk 175001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job176
+Saving chunk 176001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job177
+Saving chunk 177001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job178
+Saving chunk 178001 to the root /scratch/NODDIFittingCondor
+ mkdir /scratch/NODDIFittingCondor/Job179
+Total number of chunks (jobs) created=179
+ rm -rf /scratch/NODDIFittingCondor/shared
+ mkdir /scratch/NODDIFittingCondor/shared
+ cp /study/aa-scratch/Nagesh/CondorWorkshop/NODDIExample/CHTCCompile/NODDIFittingCondor /scratch/NODDIFittingCondor/shared
+ Data preparation complete!</pre><h2>Organizing the output and condor files.<a name="5"></a></h2><p>Creating the output directory.</p><pre class="codeinput">outputRoot = sprintf(<span class="string">'/scratch/%sOutput'</span>, compiledCodeName);
+RunOnUnix(sprintf(<span class="string">'rm -rf %s'</span>, outputRoot));
+
+<span class="comment">% Copying relevant CHTC code over to parent directory of the input</span>
+<span class="comment">% directory.</span>
+RunOnUnix(sprintf(<span class="string">'cp %s/mkdag /scratch'</span>, CHTCFilesRoot));
+RunOnUnix(sprintf(<span class="string">'cp %s/process.template /scratch'</span>, CHTCFilesRoot));
+RunOnUnix(sprintf(<span class="string">'cp %s/chtcjobwrapper /scratch'</span>, CHTCFilesRoot));
+RunOnUnix(sprintf(<span class="string">'cp %s/postjob.template /scratch'</span>, CHTCFilesRoot));
+
+<span class="comment">% Moving to the parent directory of the input directory (because of the way mkdag prepends to the paths).</span>
+cd(<span class="string">'/scratch'</span>);
+<span class="comment">% Generating the DAG.</span>
+RunOnUnix(sprintf(<span class="string">'./mkdag --cmdtorun=%s --data=%s --dagdir=%sOutput --pattern=NODDIFitChunk.mat --parg=chunk.mat --parg=protocol.mat --parg=noddi.mat --type=Matlab'</span>, compiledCodeName, compiledCodeName, compiledCodeName));
+</pre><pre class="codeoutput">
+ rm -rf /scratch/NODDIFittingCondorOutput
+ cp /study/aa-scratch/Nagesh/CondorWorkshop/CHTCFiles/mkdag /scratch
+ cp /study/aa-scratch/Nagesh/CondorWorkshop/CHTCFiles/process.template /scratch
+ cp /study/aa-scratch/Nagesh/CondorWorkshop/CHTCFiles/chtcjobwrapper /scratch
+ cp /study/aa-scratch/Nagesh/CondorWorkshop/CHTCFiles/postjob.template /scratch
+ ./mkdag --cmdtorun=NODDIFittingCondor --data=NODDIFittingCondor --dagdir=NODDIFittingCondorOutput --pattern=NODDIFitChunk.mat --parg=chunk.mat --parg=protocol.mat --parg=noddi.mat --type=MatlabNote: When you do this in conjunction with --resultdir,
+
+	       all files will go into resultdir in folders labeled 
+
+           after the input folder for the job. Any file matching
+
+           the pattern will be collected as results for you.
+
+           If you need multiple patterns use multiple use of
+
+           --patern=
+
+           
+           --pattern=sun --patter=moon --pattern=nut
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+There are &lt;0&gt; preescript args
+Path to input folders is "/scratch/NODDIFittingCondor"
+Path to output folders is "/scratch/NODDIFittingCondorOutput"
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+.looping: pargindex:0 pargcount:3 
+Arg is chunk.mat
+looping: pargindex:1 pargcount:3 
+Arg is protocol.mat
+looping: pargindex:2 pargcount:3 
+Arg is noddi.mat
+Program args requested: (chunk.mat protocol.mat noddi.mat )
+
+All done!
+
+You should now be able to submit your jobs with the following commands:
+
+  cd NODDIFittingCondorOutput
+  condor_submit_dag mydag.dag
+
+All done!
+</pre><h2>Submit condor jobs.<a name="6"></a></h2><p>Submitting the DAG.</p><pre class="codeinput">cd(sprintf(<span class="string">'%s'</span>, outputRoot));
+RunOnUnix(sprintf(<span class="string">'condor_submit_dag mydag.dag'</span>));
+</pre><pre class="codeoutput">
+ condor_submit_dag mydag.dag
+-----------------------------------------------------------------------
+File for submitting this DAG to Condor           : mydag.dag.condor.sub
+Log of DAGMan debugging messages                 : mydag.dag.dagman.out
+Log of Condor library output                     : mydag.dag.lib.out
+Log of Condor library error messages             : mydag.dag.lib.err
+Log of the life of condor_dagman itself          : mydag.dag.dagman.log
+
+Submitting job(s).
+1 job(s) submitted to cluster 231055.
+-----------------------------------------------------------------------
+</pre><h2>Collecting the output. (Run this part after the condor jobs are completed.)<a name="7"></a></h2><p>NODDIFit = sprintf('%s/NODDIFittedParamsFromCondor.mat', NODDIDataRoot); NODDIMeasurePrefix = sprintf('%s/NODDIMeasureFromCondor', NODDIDataRoot);</p><pre class="codeinput"><span class="comment">% Collect NODDI fits from chunked ROIs and put them back together.</span>
+<span class="comment">% PackageChunkROICondor(NODDIROIFile, noddi, chunkSize, outputRoot, NODDIFit);</span>
+
+<span class="comment">%Convert the estimated NODDI parameters into volumetric parameter maps</span>
+<span class="comment">% SaveParamsAsNIfTI(NODDIFit, NODDIROIFile, mask, NODDIMeasurePrefix);</span>
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+% Makesure your Matlab session is started on a valid CHTC submit
+% node like (For e.g., medusa.keck.waisman.wisc.edu and submit.chtc.wisc.edu).
+
+clear all;
+close all;
+
+%% Initializing variables.
+workshopRoot = '/study/aa-scratch/Nagesh/CondorWorkshop';
+CHTCFilesRoot = sprintf('%s/CHTCFiles', workshopRoot);
+compiledCodeRoot = sprintf('%s/NODDIExample/CHTCCompile', workshopRoot);
+compiledCodeName = 'NODDIFittingCondor';
+
+NODDIDataRoot = sprintf('%s/NODDIExample/NODDI_example_dataset', workshopRoot);
+bvalFile = sprintf('%s/NODDI_protocol.bval', NODDIDataRoot);
+bvecFile = sprintf('%s/NODDI_protocol.bvec', NODDIDataRoot);
+dwi = sprintf('%s/NODDI_DWI.hdr', NODDIDataRoot);
+mask = sprintf('%s/brain_mask.hdr', NODDIDataRoot);
+
+chunkSize = 1000;
+
+%% Adding necessary paths.
+addpath(sprintf('%s/Utilities', workshopRoot));
+addpath(compiledCodeRoot);
+
+%% Organizing input and command.
+% Creating the root directory.
+inputRoot = sprintf('/scratch/%s', compiledCodeName);
+if(~exist(inputRoot, 'dir'))
+    RunOnUnix(sprintf('mkdir %s', inputRoot));
+end
+
+% Creating directories for each job.
+% Create one job per slice.
+% Clean first.
+RunOnUnix(sprintf('rm -rf %s/Job*', inputRoot));
+
+%Create and chunk the ROI.
+NODDIROIFile = sprintf('%s/NODDIROI.mat', NODDIDataRoot);
+CreateROI(dwi, mask, NODDIROIFile);
+ChunkROICondor(NODDIROIFile, chunkSize, inputRoot, false);
+
+% Copying the compiled executable, protocol and noddi (model) to the shared directory.
+RunOnUnix(sprintf('rm -rf %s/shared', inputRoot));
+RunOnUnix(sprintf('mkdir %s/shared', inputRoot));
+RunOnUnix(sprintf('cp %s/%s %s/shared', compiledCodeRoot, compiledCodeName, inputRoot));
+protocol = FSL2Protocol(bvalFile, bvecFile);
+noddi = MakeModel('WatsonSHStickTortIsoV_B0');
+save(sprintf('%s/shared/protocol.mat', inputRoot), 'protocol');
+save(sprintf('%s/shared/noddi.mat', inputRoot), 'noddi');
+fprintf('\n Data preparation complete!');
+
+%% Organizing the output and condor files.
+% Creating the output directory.
+outputRoot = sprintf('/scratch/%sOutput', compiledCodeName);
+RunOnUnix(sprintf('rm -rf %s', outputRoot));
+
+% Copying relevant CHTC code over to parent directory of the input
+% directory.
+RunOnUnix(sprintf('cp %s/mkdag /scratch', CHTCFilesRoot));
+RunOnUnix(sprintf('cp %s/process.template /scratch', CHTCFilesRoot));
+RunOnUnix(sprintf('cp %s/chtcjobwrapper /scratch', CHTCFilesRoot));
+RunOnUnix(sprintf('cp %s/postjob.template /scratch', CHTCFilesRoot));
+
+% Moving to the parent directory of the input directory (because of the way mkdag prepends to the paths).
+cd('/scratch');
+% Generating the DAG.
+RunOnUnix(sprintf('./mkdag REPLACE_WITH_DASH_DASHcmdtorun=%s REPLACE_WITH_DASH_DASHdata=%s REPLACE_WITH_DASH_DASHdagdir=%sOutput REPLACE_WITH_DASH_DASHpattern=NODDIFitChunk.mat REPLACE_WITH_DASH_DASHparg=chunk.mat REPLACE_WITH_DASH_DASHparg=protocol.mat REPLACE_WITH_DASH_DASHparg=noddi.mat REPLACE_WITH_DASH_DASHtype=Matlab', compiledCodeName, compiledCodeName, compiledCodeName));
+
+%% Submit condor jobs.
+% Submitting the DAG.
+cd(sprintf('%s', outputRoot));
+RunOnUnix(sprintf('condor_submit_dag mydag.dag'));
+
+%% Collecting the output. (Run this part after the condor jobs are completed.)
+% NODDIFit = sprintf('%s/NODDIFittedParamsFromCondor.mat', NODDIDataRoot);
+% NODDIMeasurePrefix = sprintf('%s/NODDIMeasureFromCondor', NODDIDataRoot);
+
+% Collect NODDI fits from chunked ROIs and put them back together.
+% PackageChunkROICondor(NODDIROIFile, noddi, chunkSize, outputRoot, NODDIFit);
+
+%Convert the estimated NODDI parameters into volumetric parameter maps
+% SaveParamsAsNIfTI(NODDIFit, NODDIROIFile, mask, NODDIMeasurePrefix);
+
+##### SOURCE END #####
+--></body></html>

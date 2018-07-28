@@ -1,0 +1,314 @@
+Compiler will be from Matlab R2011b
+ mfiles=batch_fitting.m,batch_fitting_single.m,BesselJ_RootsCyl.m,ChunkROICondor.m,CreateROI.m,CylNeumanLePar_PGSE.m,CylNeumanLePerp_PGSE.m,DT_DesignMatrix.m,erfi.m,EstimateSigma.m,FitLinearDT.m,fmincon_fix.m,fobj_rician_fix.m,fobj_rician.m,fobj_rician_st.m,FSL2Protocol.m,GetB0.m,GetB_Values.m,GetFibreOrientation.m,GetParameterIndex.m,GetParameterStrings.m,GetScalingFactors.m,GetSearchGrid.m,GradDescDecode.m,GradDescEncode.m,GradDescLimits.m,GridSearchRician.m,LegendreGaussianIntegral.m,logbesseli0.m,MakeDT_Matrix.m,MakeModel.m,NODDIFittingCondor.m,NumFreeParams.m,PackageChunkROICondor.m,PlotFittedModel.m,RemoveNegMeas.m,RicianLogLik.m,SaveAsNIfTI.m,SaveParamsAsNIfTI.m,SchemeToProtocol.m,SynthMeasHinderedDiffusion_PGSE.m,SynthMeasIsoGPD.m,SynthMeas.m,SynthMeasWatsonHinderedDiffusion_PGSE.m,SynthMeasWatsonSHCylNeuman_PGSE.m,SynthMeasWatsonSHCylSingleRadGPD.m,SynthMeasWatsonSHCylSingleRadGPD_PGSE.m,SynthMeasWatsonSHCylSingleRadIsoV_GPD_B0.m,SynthMeasWatsonSHCylSingleRadIsoV_GPD.m,SynthMeasWatsonSHCylSingleRadIsoVIsoDot_GPD_B0.m,SynthMeasWatsonSHCylSingleRadIsoVIsoDot_GPD.m,SynthMeasWatsonSHCylSingleRadTortGPD.m,SynthMeasWatsonSHCylSingleRadTortIsoV_GPD_B0.m,SynthMeasWatsonSHCylSingleRadTortIsoV_GPD.m,SynthMeasWatsonSHCylSingleRadTortIsoVIsoDot_GPD_B0.m,SynthMeasWatsonSHCylSingleRadTortIsoVIsoDot_GPD.m,SynthMeasWatsonSHStickIsoV_B0.m,SynthMeasWatsonSHStickIsoVIsoDot_B0.m,SynthMeasWatsonSHStickTortIsoV_B0.m,SynthMeasWatsonSHStickTortIsoVIsoDot_B0.m,ThreeStageFittingVoxel.m,VoxelDataViewer.m,WatsonHinderedDiffusionCoeff.m,WatsonSHCoeff.m mtargets=NODDIFittingCondor.m, version=R2011b
+Look around for tar files here:
+/var/lib/condor/execute/slot1/dir_21629
+BesselJ_RootsCyl.m
+ChunkROICondor.m
+CreateROI.m
+CylNeumanLePar_PGSE.m
+CylNeumanLePerp_PGSE.m
+DT_DesignMatrix.m
+EstimateSigma.m
+FSL2Protocol.m
+FitLinearDT.m
+GetB0.m
+GetB_Values.m
+GetFibreOrientation.m
+GetParameterIndex.m
+GetParameterStrings.m
+GetScalingFactors.m
+GetSearchGrid.m
+GradDescDecode.m
+GradDescEncode.m
+GradDescLimits.m
+GridSearchRician.m
+LegendreGaussianIntegral.m
+MakeDT_Matrix.m
+MakeModel.m
+NODDIFittingCondor.m
+NumFreeParams.m
+PackageChunkROICondor.m
+PlotFittedModel.m
+RemoveNegMeas.m
+RicianLogLik.m
+SaveAsNIfTI.m
+SaveParamsAsNIfTI.m
+SchemeToProtocol.m
+SynthMeas.m
+SynthMeasHinderedDiffusion_PGSE.m
+SynthMeasIsoGPD.m
+SynthMeasWatsonHinderedDiffusion_PGSE.m
+SynthMeasWatsonSHCylNeuman_PGSE.m
+SynthMeasWatsonSHCylSingleRadGPD.m
+SynthMeasWatsonSHCylSingleRadGPD_PGSE.m
+SynthMeasWatsonSHCylSingleRadIsoVIsoDot_GPD.m
+SynthMeasWatsonSHCylSingleRadIsoVIsoDot_GPD_B0.m
+SynthMeasWatsonSHCylSingleRadIsoV_GPD.m
+SynthMeasWatsonSHCylSingleRadIsoV_GPD_B0.m
+SynthMeasWatsonSHCylSingleRadTortGPD.m
+SynthMeasWatsonSHCylSingleRadTortIsoVIsoDot_GPD.m
+SynthMeasWatsonSHCylSingleRadTortIsoVIsoDot_GPD_B0.m
+SynthMeasWatsonSHCylSingleRadTortIsoV_GPD.m
+SynthMeasWatsonSHCylSingleRadTortIsoV_GPD_B0.m
+SynthMeasWatsonSHStickIsoVIsoDot_B0.m
+SynthMeasWatsonSHStickIsoV_B0.m
+SynthMeasWatsonSHStickTortIsoVIsoDot_B0.m
+SynthMeasWatsonSHStickTortIsoV_B0.m
+ThreeStageFittingVoxel.m
+VoxelDataViewer.m
+WatsonHinderedDiffusionCoeff.m
+WatsonSHCoeff.m
+_condor_stderr
+_condor_stdout
+batch_fitting.m
+batch_fitting_single.m
+condor_exec.exe
+erfi.m
+fmincon_fix.m
+fobj_rician.m
+fobj_rician_fix.m
+fobj_rician_st.m
+logbesseli0.m
+Looking for tar files:SynthMeasWatsonSHCylSingleRadTortIsoVIsoDot_GPD.m
+SynthMeasWatsonSHCylSingleRadTortIsoVIsoDot_GPD.m not tar file
+Looking for tar files:SaveParamsAsNIfTI.m
+SaveParamsAsNIfTI.m not tar file
+Looking for tar files:PlotFittedModel.m
+PlotFittedModel.m not tar file
+Looking for tar files:SynthMeasWatsonSHCylSingleRadTortIsoV_GPD.m
+SynthMeasWatsonSHCylSingleRadTortIsoV_GPD.m not tar file
+Looking for tar files:SynthMeasWatsonSHCylNeuman_PGSE.m
+SynthMeasWatsonSHCylNeuman_PGSE.m not tar file
+Looking for tar files:SynthMeasWatsonSHCylSingleRadTortIsoV_GPD_B0.m
+SynthMeasWatsonSHCylSingleRadTortIsoV_GPD_B0.m not tar file
+Looking for tar files:SynthMeasWatsonSHStickTortIsoV_B0.m
+SynthMeasWatsonSHStickTortIsoV_B0.m not tar file
+Looking for tar files:SynthMeasWatsonSHCylSingleRadTortIsoVIsoDot_GPD_B0.m
+SynthMeasWatsonSHCylSingleRadTortIsoVIsoDot_GPD_B0.m not tar file
+Looking for tar files:GetB_Values.m
+GetB_Values.m not tar file
+Looking for tar files:SynthMeasHinderedDiffusion_PGSE.m
+SynthMeasHinderedDiffusion_PGSE.m not tar file
+Looking for tar files:condor_exec.exe
+condor_exec.exe not tar file
+Looking for tar files:FitLinearDT.m
+FitLinearDT.m not tar file
+Looking for tar files:CylNeumanLePerp_PGSE.m
+CylNeumanLePerp_PGSE.m not tar file
+Looking for tar files:GradDescDecode.m
+GradDescDecode.m not tar file
+Looking for tar files:SchemeToProtocol.m
+SchemeToProtocol.m not tar file
+Looking for tar files:SynthMeasWatsonSHCylSingleRadGPD.m
+SynthMeasWatsonSHCylSingleRadGPD.m not tar file
+Looking for tar files:fobj_rician_fix.m
+fobj_rician_fix.m not tar file
+Looking for tar files:fmincon_fix.m
+fmincon_fix.m not tar file
+Looking for tar files:LegendreGaussianIntegral.m
+LegendreGaussianIntegral.m not tar file
+Looking for tar files:RicianLogLik.m
+RicianLogLik.m not tar file
+Looking for tar files:SynthMeasWatsonHinderedDiffusion_PGSE.m
+SynthMeasWatsonHinderedDiffusion_PGSE.m not tar file
+Looking for tar files:_condor_stderr
+_condor_stderr not tar file
+Looking for tar files:SynthMeasWatsonSHStickTortIsoVIsoDot_B0.m
+SynthMeasWatsonSHStickTortIsoVIsoDot_B0.m not tar file
+Looking for tar files:RemoveNegMeas.m
+RemoveNegMeas.m not tar file
+Looking for tar files:GetB0.m
+GetB0.m not tar file
+Looking for tar files:SynthMeasWatsonSHCylSingleRadIsoVIsoDot_GPD.m
+SynthMeasWatsonSHCylSingleRadIsoVIsoDot_GPD.m not tar file
+Looking for tar files:GradDescLimits.m
+GradDescLimits.m not tar file
+Looking for tar files:ThreeStageFittingVoxel.m
+ThreeStageFittingVoxel.m not tar file
+Looking for tar files:GetFibreOrientation.m
+GetFibreOrientation.m not tar file
+Looking for tar files:CreateROI.m
+CreateROI.m not tar file
+Looking for tar files:.machine.ad
+.machine.ad not tar file
+Looking for tar files:GetParameterIndex.m
+GetParameterIndex.m not tar file
+Looking for tar files:GradDescEncode.m
+GradDescEncode.m not tar file
+Looking for tar files:DT_DesignMatrix.m
+DT_DesignMatrix.m not tar file
+Looking for tar files:_condor_stdout
+_condor_stdout not tar file
+Looking for tar files:NumFreeParams.m
+NumFreeParams.m not tar file
+Looking for tar files:MakeDT_Matrix.m
+MakeDT_Matrix.m not tar file
+Looking for tar files:GetScalingFactors.m
+GetScalingFactors.m not tar file
+Looking for tar files:batch_fitting.m
+batch_fitting.m not tar file
+Looking for tar files:ChunkROICondor.m
+ChunkROICondor.m not tar file
+Looking for tar files:VoxelDataViewer.m
+VoxelDataViewer.m not tar file
+Looking for tar files:SaveAsNIfTI.m
+SaveAsNIfTI.m not tar file
+Looking for tar files:.job.ad
+.job.ad not tar file
+Looking for tar files:SynthMeasWatsonSHCylSingleRadGPD_PGSE.m
+SynthMeasWatsonSHCylSingleRadGPD_PGSE.m not tar file
+Looking for tar files:BesselJ_RootsCyl.m
+BesselJ_RootsCyl.m not tar file
+Looking for tar files:SynthMeasWatsonSHCylSingleRadTortGPD.m
+SynthMeasWatsonSHCylSingleRadTortGPD.m not tar file
+Looking for tar files:FSL2Protocol.m
+FSL2Protocol.m not tar file
+Looking for tar files:WatsonHinderedDiffusionCoeff.m
+WatsonHinderedDiffusionCoeff.m not tar file
+Looking for tar files:SynthMeasWatsonSHCylSingleRadIsoV_GPD_B0.m
+SynthMeasWatsonSHCylSingleRadIsoV_GPD_B0.m not tar file
+Looking for tar files:fobj_rician.m
+fobj_rician.m not tar file
+Looking for tar files:MakeModel.m
+MakeModel.m not tar file
+Looking for tar files:erfi.m
+erfi.m not tar file
+Looking for tar files:WatsonSHCoeff.m
+WatsonSHCoeff.m not tar file
+Looking for tar files:NODDIFittingCondor.m
+NODDIFittingCondor.m not tar file
+Looking for tar files:batch_fitting_single.m
+batch_fitting_single.m not tar file
+Looking for tar files:GridSearchRician.m
+GridSearchRician.m not tar file
+Looking for tar files:.chirp_config
+.chirp_config not tar file
+Looking for tar files:logbesseli0.m
+logbesseli0.m not tar file
+Looking for tar files:EstimateSigma.m
+EstimateSigma.m not tar file
+Looking for tar files:fobj_rician_st.m
+fobj_rician_st.m not tar file
+Looking for tar files:CylNeumanLePar_PGSE.m
+CylNeumanLePar_PGSE.m not tar file
+Looking for tar files:SynthMeasWatsonSHStickIsoVIsoDot_B0.m
+SynthMeasWatsonSHStickIsoVIsoDot_B0.m not tar file
+Looking for tar files:SynthMeas.m
+SynthMeas.m not tar file
+Looking for tar files:GetParameterStrings.m
+GetParameterStrings.m not tar file
+Looking for tar files:SynthMeasWatsonSHCylSingleRadIsoV_GPD.m
+SynthMeasWatsonSHCylSingleRadIsoV_GPD.m not tar file
+Looking for tar files:SynthMeasIsoGPD.m
+SynthMeasIsoGPD.m not tar file
+Looking for tar files:SynthMeasWatsonSHCylSingleRadIsoVIsoDot_GPD_B0.m
+SynthMeasWatsonSHCylSingleRadIsoVIsoDot_GPD_B0.m not tar file
+Looking for tar files:PackageChunkROICondor.m
+PackageChunkROICondor.m not tar file
+Looking for tar files:GetSearchGrid.m
+GetSearchGrid.m not tar file
+Looking for tar files:SynthMeasWatsonSHStickIsoV_B0.m
+SynthMeasWatsonSHStickIsoV_B0.m not tar file
+/usr/local/MATLAB/R2011b/bin/mcc
+/usr/local/MATLAB/R2011b/bin/mex
+MCC compiletime path = <<<</home/gcc434/bin:.:/usr/local/MATLAB/R2011b/bin:/bin:/usr/bin:/usr/X11R6/bin>>>>
+_CONDOR_ANCESTOR_3609=3645:1424241858:1379318279
+_CONDOR_ANCESTOR_21629=21690:1425937802:835935595
+_CONDOR_ANCESTOR_3645=21629:1425937801:707004268
+TEMP=/var/lib/condor/execute/slot1/dir_21629
+_CONDOR_SCRATCH_DIR=/var/lib/condor/execute/slot1/dir_21629
+_CONDOR_SLOT=slot1
+BATCH_SYSTEM=HTCondor
+TMPDIR=/var/lib/condor/execute/slot1/dir_21629
+_CONDOR_CHIRP_CONFIG=/var/lib/condor/execute/slot1/dir_21629/.chirp_config
+_CONDOR_JOB_PIDS=
+TMP=/var/lib/condor/execute/slot1/dir_21629
+_CONDOR_JOB_AD=/var/lib/condor/execute/slot1/dir_21629/.job.ad
+_CONDOR_JOB_IWD=/var/lib/condor/execute/slot1/dir_21629
+_CHIRP_DELAYED_UPDATE_PREFIX=Chirp*
+_CONDOR_MACHINE_AD=/var/lib/condor/execute/slot1/dir_21629/.machine.ad
+PATH=/home/gcc434/bin:.:/usr/local/MATLAB/R2011b/bin:/bin:/usr/bin:/usr/X11R6/bin
+USER=bt
+TERM=xterm
+SHELL=/bin/bash
+LOGNAME=bt
+HOME=/var/lib/condor/execute/slot1/dir_21629
+PWD=/tmp
+HOSTNAME=submit.chtc.wisc.edu
+SSH_TTY=/dev/pts/4
+LANG=en_US.UTF-8
+LD_LIBRARY_PATH=/home/gcc434/mpfr2_3_1/lib:/home/gcc434/gmp4_1_2/lib
+Linux matlab-build-1.chtc.wisc.edu 2.6.32-358.11.1.el6.x86_64 #1 SMP Tue Jun 11 17:23:30 CDT 2013 x86_64 x86_64 x86_64 GNU/Linux
+/home/gcc434/bin/gcc
+total 332K
+-rwxr--r-- 1 slot1 slot1 3.8K Mar  9 16:50 batch_fitting.m
+-rwxr--r-- 1 slot1 slot1 2.8K Mar  9 16:50 batch_fitting_single.m
+-rwxr--r-- 1 slot1 slot1  829 Mar  9 16:50 BesselJ_RootsCyl.m
+-rwxr--r-- 1 slot1 slot1 1.6K Mar  9 16:50 ChunkROICondor.m
+-rwxr-xr-x 1 slot1 slot1 5.0K Mar  9 16:50 condor_exec.exe
+-rw-r--r-- 1 slot1 slot1    0 Mar  9 16:50 _condor_stderr
+-rw-r--r-- 1 slot1 slot1  11K Mar  9 16:50 _condor_stdout
+-rwxr--r-- 1 slot1 slot1 2.1K Mar  9 16:50 CreateROI.m
+-rwxr--r-- 1 slot1 slot1 1.3K Mar  9 16:50 CylNeumanLePar_PGSE.m
+-rwxr--r-- 1 slot1 slot1 3.8K Mar  9 16:50 CylNeumanLePerp_PGSE.m
+-rwxr--r-- 1 slot1 slot1 4.2K Mar  9 16:50 DT_DesignMatrix.m
+-rwxr--r-- 1 slot1 slot1  840 Mar  9 16:50 erfi.m
+-rwxr--r-- 1 slot1 slot1  922 Mar  9 16:50 EstimateSigma.m
+-rwxr--r-- 1 slot1 slot1 1.4K Mar  9 16:50 FitLinearDT.m
+-rwxr--r-- 1 slot1 slot1  906 Mar  9 16:50 fmincon_fix.m
+-rwxr--r-- 1 slot1 slot1 1.1K Mar  9 16:50 fobj_rician_fix.m
+-rwxr--r-- 1 slot1 slot1 1.5K Mar  9 16:50 fobj_rician.m
+-rwxr--r-- 1 slot1 slot1 2.3K Mar  9 16:50 fobj_rician_st.m
+-rwxr--r-- 1 slot1 slot1 2.0K Mar  9 16:50 FSL2Protocol.m
+-rwxr--r-- 1 slot1 slot1  303 Mar  9 16:50 GetB0.m
+-rwxr--r-- 1 slot1 slot1  850 Mar  9 16:50 GetB_Values.m
+-rwxr--r-- 1 slot1 slot1  462 Mar  9 16:50 GetFibreOrientation.m
+-rwxr--r-- 1 slot1 slot1  478 Mar  9 16:50 GetParameterIndex.m
+-rwxr--r-- 1 slot1 slot1 1.7K Mar  9 16:50 GetParameterStrings.m
+-rwxr--r-- 1 slot1 slot1 1.5K Mar  9 16:50 GetScalingFactors.m
+-rwxr--r-- 1 slot1 slot1  20K Mar  9 16:50 GetSearchGrid.m
+-rwxr--r-- 1 slot1 slot1 1.5K Mar  9 16:50 GradDescDecode.m
+-rwxr--r-- 1 slot1 slot1 1.5K Mar  9 16:50 GradDescEncode.m
+-rwxr--r-- 1 slot1 slot1 2.0K Mar  9 16:50 GradDescLimits.m
+-rwxr--r-- 1 slot1 slot1 5.1K Mar  9 16:50 GridSearchRician.m
+-rwxr--r-- 1 slot1 slot1 5.1K Mar  9 16:50 LegendreGaussianIntegral.m
+-rwxr--r-- 1 slot1 slot1  873 Mar  9 16:50 logbesseli0.m
+-rwxr--r-- 1 slot1 slot1  358 Mar  9 16:50 MakeDT_Matrix.m
+-rwxr--r-- 1 slot1 slot1 2.6K Mar  9 16:50 MakeModel.m
+-rwxr--r-- 1 slot1 slot1 1.9K Mar  9 16:50 NODDIFittingCondor.m
+-rwxr--r-- 1 slot1 slot1  295 Mar  9 16:50 NumFreeParams.m
+-rwxr--r-- 1 slot1 slot1 2.3K Mar  9 16:50 PackageChunkROICondor.m
+-rwxr--r-- 1 slot1 slot1 1.8K Mar  9 16:50 PlotFittedModel.m
+-rwxr--r-- 1 slot1 slot1 1.8K Mar  9 16:50 RemoveNegMeas.m
+-rwxr--r-- 1 slot1 slot1  730 Mar  9 16:50 RicianLogLik.m
+-rwxr--r-- 1 slot1 slot1  722 Mar  9 16:50 SaveAsNIfTI.m
+-rwxr--r-- 1 slot1 slot1 5.1K Mar  9 16:50 SaveParamsAsNIfTI.m
+-rwxr--r-- 1 slot1 slot1  794 Mar  9 16:50 SchemeToProtocol.m
+-rwxr--r-- 1 slot1 slot1 1.9K Mar  9 16:50 SynthMeasHinderedDiffusion_PGSE.m
+-rwxr--r-- 1 slot1 slot1 2.5K Mar  9 16:50 SynthMeasIsoGPD.m
+-rwxr--r-- 1 slot1 slot1  15K Mar  9 16:50 SynthMeas.m
+-rwxr--r-- 1 slot1 slot1 2.1K Mar  9 16:50 SynthMeasWatsonHinderedDiffusion_PGSE.m
+-rwxr--r-- 1 slot1 slot1 4.6K Mar  9 16:50 SynthMeasWatsonSHCylNeuman_PGSE.m
+-rwxr--r-- 1 slot1 slot1 2.4K Mar  9 16:50 SynthMeasWatsonSHCylSingleRadGPD.m
+-rwxr--r-- 1 slot1 slot1 3.1K Mar  9 16:50 SynthMeasWatsonSHCylSingleRadGPD_PGSE.m
+-rwxr--r-- 1 slot1 slot1 2.0K Mar  9 16:50 SynthMeasWatsonSHCylSingleRadIsoV_GPD_B0.m
+-rwxr--r-- 1 slot1 slot1 2.2K Mar  9 16:50 SynthMeasWatsonSHCylSingleRadIsoV_GPD.m
+-rwxr--r-- 1 slot1 slot1 2.1K Mar  9 16:50 SynthMeasWatsonSHCylSingleRadIsoVIsoDot_GPD_B0.m
+-rwxr--r-- 1 slot1 slot1 2.2K Mar  9 16:50 SynthMeasWatsonSHCylSingleRadIsoVIsoDot_GPD.m
+-rwxr--r-- 1 slot1 slot1 2.1K Mar  9 16:50 SynthMeasWatsonSHCylSingleRadTortGPD.m
+-rwxr--r-- 1 slot1 slot1 2.1K Mar  9 16:50 SynthMeasWatsonSHCylSingleRadTortIsoV_GPD_B0.m
+-rwxr--r-- 1 slot1 slot1 2.3K Mar  9 16:50 SynthMeasWatsonSHCylSingleRadTortIsoV_GPD.m
+-rwxr--r-- 1 slot1 slot1 2.2K Mar  9 16:50 SynthMeasWatsonSHCylSingleRadTortIsoVIsoDot_GPD_B0.m
+-rwxr--r-- 1 slot1 slot1 2.3K Mar  9 16:50 SynthMeasWatsonSHCylSingleRadTortIsoVIsoDot_GPD.m
+-rwxr--r-- 1 slot1 slot1 1.9K Mar  9 16:50 SynthMeasWatsonSHStickIsoV_B0.m
+-rwxr--r-- 1 slot1 slot1 2.1K Mar  9 16:50 SynthMeasWatsonSHStickIsoVIsoDot_B0.m
+-rwxr--r-- 1 slot1 slot1 2.0K Mar  9 16:50 SynthMeasWatsonSHStickTortIsoV_B0.m
+-rwxr--r-- 1 slot1 slot1 2.2K Mar  9 16:50 SynthMeasWatsonSHStickTortIsoVIsoDot_B0.m
+-rwxr--r-- 1 slot1 slot1 7.0K Mar  9 16:50 ThreeStageFittingVoxel.m
+-rwxr--r-- 1 slot1 slot1 1.9K Mar  9 16:50 VoxelDataViewer.m
+-rwxr--r-- 1 slot1 slot1 2.2K Mar  9 16:50 WatsonHinderedDiffusionCoeff.m
+-rwxr--r-- 1 slot1 slot1 7.3K Mar  9 16:50 WatsonSHCoeff.m
+About to do this compile: <<mcc -m -R -singleCompThread -R -nodisplay -R -nojvm NODDIFittingCondor.m>>
+Warning: You have specified '-R -nojvm', which may restrict or eliminate MATLAB graphics functionality at runtime.
+Warning: No display specified.  You will not be able to display graphics on the screen.
+Return from compile request is <<<0>>>

@@ -1,0 +1,103 @@
+Compiler will be from Matlab R2011b
+ mfiles=BesselJ_RootsCyl.m,CreateROI.m,CylNeumanLePar_PGSE.m,CylNeumanLePerp_PGSE.m,DT_DesignMatrix.m,EstimateSigma.m,FSL2Protocol.m,FitLinearDT.m,GetB0.m,GetB_Values.m,GetFibreOrientation.m,GetParameterIndex.m,GetParameterStrings.m,GetScalingFactors.m,GetSearchGrid.m,GradDescDecode.m,GradDescEncode.m,GradDescLimits.m,GridSearchRician.m,LegendreGaussianIntegral.m,MakeDT_Matrix.m,MakeModel.m,NumFreeParams.m,PlotFittedModel.m,RemoveNegMeas.m,RicianLogLik.m,SaveAsNIfTI.m,SaveParamsAsNIfTI.m,SchemeToProtocol.m,SynthMeas.m,SynthMeasHinderedDiffusion_PGSE.m,SynthMeasIsoGPD.m,SynthMeasWatsonHinderedDiffusion_PGSE.m,SynthMeasWatsonSHCylNeuman_PGSE.m,SynthMeasWatsonSHCylSingleRadGPD.m,SynthMeasWatsonSHCylSingleRadGPD_PGSE.m,SynthMeasWatsonSHCylSingleRadIsoVIsoDot_GPD.m,SynthMeasWatsonSHCylSingleRadIsoVIsoDot_GPD_B0.m,SynthMeasWatsonSHCylSingleRadIsoV_GPD.m,SynthMeasWatsonSHCylSingleRadIsoV_GPD_B0.m,SynthMeasWatsonSHCylSingleRadTortGPD.m,SynthMeasWatsonSHCylSingleRadTortIsoVIsoDot_GPD.m,SynthMeasWatsonSHCylSingleRadTortIsoVIsoDot_GPD_B0.m,SynthMeasWatsonSHCylSingleRadTortIsoV_GPD.m,SynthMeasWatsonSHCylSingleRadTortIsoV_GPD_B0.m,SynthMeasWatsonSHStickIsoVIsoDot_B0.m,SynthMeasWatsonSHStickIsoV_B0.m,SynthMeasWatsonSHStickTortIsoVIsoDot_B0.m,SynthMeasWatsonSHStickTortIsoV_B0.m,ThreeStageFittingVoxel.m,VoxelDataViewer.m,WatsonHinderedDiffusionCoeff.m,WatsonSHCoeff.m,batch_fitting.m,batch_fitting_single.m,erfi.m,fmincon_fix.m,fobj_rician.m,fobj_rician_fix.m,fobj_rician_st.m,logbesseli0.m,NODDIFittingCondor.m mtargets=NODDIFittingCondor.m, version=R2011b
+/usr/local/MATLAB/R2011b/bin/mcc
+/usr/local/MATLAB/R2011b/bin/mex
+MCC compiletime path = <<<</home/gcc434/bin:.:/usr/local/MATLAB/R2011b/bin:/bin:/usr/bin:/usr/X11R6/bin>>>>
+_CONDOR_ANCESTOR_20784=20788:1415669020:1222908324
+_CONDOR_ANCESTOR_14544=14546:1412371012:4032801881
+_CONDOR_ANCESTOR_14546=20784:1415669018:2116530370
+TEMP=/var/lib/condor/execute/slot1/dir_20784
+_CONDOR_SCRATCH_DIR=/var/lib/condor/execute/slot1/dir_20784
+_CONDOR_SLOT=slot1
+BATCH_SYSTEM=HTCondor
+TMPDIR=/var/lib/condor/execute/slot1/dir_20784
+_CONDOR_CHIRP_CONFIG=/var/lib/condor/execute/slot1/dir_20784/.chirp_config
+_CONDOR_JOB_PIDS=
+TMP=/var/lib/condor/execute/slot1/dir_20784
+_CONDOR_JOB_AD=/var/lib/condor/execute/slot1/dir_20784/.job.ad
+_CONDOR_JOB_IWD=/var/lib/condor/execute/slot1/dir_20784
+_CHIRP_DELAYED_UPDATE_PREFIX=Chirp*
+_CONDOR_MACHINE_AD=/var/lib/condor/execute/slot1/dir_20784/.machine.ad
+PATH=/home/gcc434/bin:.:/usr/local/MATLAB/R2011b/bin:/bin:/usr/bin:/usr/X11R6/bin
+USER=bt
+TERM=xterm
+SHELL=/bin/bash
+LOGNAME=bt
+HOME=/var/lib/condor/execute/slot1/dir_20784
+PWD=/tmp
+HOSTNAME=submit.chtc.wisc.edu
+SSH_TTY=/dev/pts/4
+LANG=en_US.UTF-8
+LD_LIBRARY_PATH=/home/gcc434/mpfr2_3_1/lib:/home/gcc434/gmp4_1_2/lib
+Linux matlab-build-1.chtc.wisc.edu 2.6.32-358.11.1.el6.x86_64 #1 SMP Tue Jun 11 17:23:30 CDT 2013 x86_64 x86_64 x86_64 GNU/Linux
+/home/gcc434/bin/gcc
+total 316K
+-rw-r--r-- 1 slot1 slot1 3.7K Nov 10 19:23 batch_fitting.m
+-rw-r--r-- 1 slot1 slot1 2.8K Nov 10 19:23 batch_fitting_single.m
+-rw-r--r-- 1 slot1 slot1  829 Nov 10 19:23 BesselJ_RootsCyl.m
+-rwxr-xr-x 1 slot1 slot1 4.7K Nov 10 19:23 condor_exec.exe
+-rw-r--r-- 1 slot1 slot1    0 Nov 10 19:23 _condor_stderr
+-rw-r--r-- 1 slot1 slot1 2.9K Nov 10 19:23 _condor_stdout
+-rw-r--r-- 1 slot1 slot1 2.0K Nov 10 19:23 CreateROI.m
+-rw-r--r-- 1 slot1 slot1 1.3K Nov 10 19:23 CylNeumanLePar_PGSE.m
+-rw-r--r-- 1 slot1 slot1 3.8K Nov 10 19:23 CylNeumanLePerp_PGSE.m
+-rw-r--r-- 1 slot1 slot1 4.1K Nov 10 19:23 DT_DesignMatrix.m
+-rw-r--r-- 1 slot1 slot1  840 Nov 10 19:23 erfi.m
+-rw-r--r-- 1 slot1 slot1  895 Nov 10 19:23 EstimateSigma.m
+-rw-r--r-- 1 slot1 slot1 1.4K Nov 10 19:23 FitLinearDT.m
+-rw-r--r-- 1 slot1 slot1  906 Nov 10 19:23 fmincon_fix.m
+-rw-r--r-- 1 slot1 slot1 1.1K Nov 10 19:23 fobj_rician_fix.m
+-rw-r--r-- 1 slot1 slot1 1.5K Nov 10 19:23 fobj_rician.m
+-rw-r--r-- 1 slot1 slot1 2.3K Nov 10 19:23 fobj_rician_st.m
+-rw-r--r-- 1 slot1 slot1 1.9K Nov 10 19:23 FSL2Protocol.m
+-rw-r--r-- 1 slot1 slot1  287 Nov 10 19:23 GetB0.m
+-rw-r--r-- 1 slot1 slot1  850 Nov 10 19:23 GetB_Values.m
+-rw-r--r-- 1 slot1 slot1  448 Nov 10 19:23 GetFibreOrientation.m
+-rw-r--r-- 1 slot1 slot1  458 Nov 10 19:23 GetParameterIndex.m
+-rw-r--r-- 1 slot1 slot1 1.7K Nov 10 19:23 GetParameterStrings.m
+-rw-r--r-- 1 slot1 slot1 1.5K Nov 10 19:23 GetScalingFactors.m
+-rw-r--r-- 1 slot1 slot1  20K Nov 10 19:23 GetSearchGrid.m
+-rw-r--r-- 1 slot1 slot1 1.5K Nov 10 19:23 GradDescDecode.m
+-rw-r--r-- 1 slot1 slot1 1.5K Nov 10 19:23 GradDescEncode.m
+-rw-r--r-- 1 slot1 slot1 2.0K Nov 10 19:23 GradDescLimits.m
+-rw-r--r-- 1 slot1 slot1 5.1K Nov 10 19:23 GridSearchRician.m
+-rw-r--r-- 1 slot1 slot1 5.1K Nov 10 19:23 LegendreGaussianIntegral.m
+-rw-r--r-- 1 slot1 slot1  873 Nov 10 19:23 logbesseli0.m
+-rw-r--r-- 1 slot1 slot1  358 Nov 10 19:23 MakeDT_Matrix.m
+-rw-r--r-- 1 slot1 slot1 2.5K Nov 10 19:23 MakeModel.m
+-rwx------ 1 slot1 slot1 1.9K Nov 10 19:23 NODDIFittingCondor.m
+-rw-r--r-- 1 slot1 slot1  295 Nov 10 19:23 NumFreeParams.m
+-rw-r--r-- 1 slot1 slot1 1.8K Nov 10 19:23 PlotFittedModel.m
+-rw-r--r-- 1 slot1 slot1 1.8K Nov 10 19:23 RemoveNegMeas.m
+-rw-r--r-- 1 slot1 slot1  730 Nov 10 19:23 RicianLogLik.m
+-rw-r--r-- 1 slot1 slot1  687 Nov 10 19:23 SaveAsNIfTI.m
+-rw-r--r-- 1 slot1 slot1 5.0K Nov 10 19:23 SaveParamsAsNIfTI.m
+-rw-r--r-- 1 slot1 slot1  760 Nov 10 19:23 SchemeToProtocol.m
+-rw-r--r-- 1 slot1 slot1 1.9K Nov 10 19:23 SynthMeasHinderedDiffusion_PGSE.m
+-rw-r--r-- 1 slot1 slot1 2.5K Nov 10 19:23 SynthMeasIsoGPD.m
+-rw-r--r-- 1 slot1 slot1  15K Nov 10 19:23 SynthMeas.m
+-rw-r--r-- 1 slot1 slot1 2.1K Nov 10 19:23 SynthMeasWatsonHinderedDiffusion_PGSE.m
+-rw-r--r-- 1 slot1 slot1 4.6K Nov 10 19:23 SynthMeasWatsonSHCylNeuman_PGSE.m
+-rw-r--r-- 1 slot1 slot1 2.4K Nov 10 19:23 SynthMeasWatsonSHCylSingleRadGPD.m
+-rw-r--r-- 1 slot1 slot1 3.1K Nov 10 19:23 SynthMeasWatsonSHCylSingleRadGPD_PGSE.m
+-rw-r--r-- 1 slot1 slot1 2.0K Nov 10 19:23 SynthMeasWatsonSHCylSingleRadIsoV_GPD_B0.m
+-rw-r--r-- 1 slot1 slot1 2.2K Nov 10 19:23 SynthMeasWatsonSHCylSingleRadIsoV_GPD.m
+-rw-r--r-- 1 slot1 slot1 2.1K Nov 10 19:23 SynthMeasWatsonSHCylSingleRadIsoVIsoDot_GPD_B0.m
+-rw-r--r-- 1 slot1 slot1 2.2K Nov 10 19:23 SynthMeasWatsonSHCylSingleRadIsoVIsoDot_GPD.m
+-rw-r--r-- 1 slot1 slot1 2.1K Nov 10 19:23 SynthMeasWatsonSHCylSingleRadTortGPD.m
+-rw-r--r-- 1 slot1 slot1 2.1K Nov 10 19:23 SynthMeasWatsonSHCylSingleRadTortIsoV_GPD_B0.m
+-rw-r--r-- 1 slot1 slot1 2.3K Nov 10 19:23 SynthMeasWatsonSHCylSingleRadTortIsoV_GPD.m
+-rw-r--r-- 1 slot1 slot1 2.2K Nov 10 19:23 SynthMeasWatsonSHCylSingleRadTortIsoVIsoDot_GPD_B0.m
+-rw-r--r-- 1 slot1 slot1 2.3K Nov 10 19:23 SynthMeasWatsonSHCylSingleRadTortIsoVIsoDot_GPD.m
+-rw-r--r-- 1 slot1 slot1 1.9K Nov 10 19:23 SynthMeasWatsonSHStickIsoV_B0.m
+-rw-r--r-- 1 slot1 slot1 2.1K Nov 10 19:23 SynthMeasWatsonSHStickIsoVIsoDot_B0.m
+-rw-r--r-- 1 slot1 slot1 2.0K Nov 10 19:23 SynthMeasWatsonSHStickTortIsoV_B0.m
+-rw-r--r-- 1 slot1 slot1 2.2K Nov 10 19:23 SynthMeasWatsonSHStickTortIsoVIsoDot_B0.m
+-rw-r--r-- 1 slot1 slot1 6.8K Nov 10 19:23 ThreeStageFittingVoxel.m
+-rw-r--r-- 1 slot1 slot1 1.9K Nov 10 19:23 VoxelDataViewer.m
+-rw-r--r-- 1 slot1 slot1 2.2K Nov 10 19:23 WatsonHinderedDiffusionCoeff.m
+-rw-r--r-- 1 slot1 slot1 7.3K Nov 10 19:23 WatsonSHCoeff.m
+About to do this compile: <<mcc -m -R -singleCompThread -R -nodisplay -R -nojvm NODDIFittingCondor.m>>
+Warning: You have specified '-R -nojvm', which may restrict or eliminate MATLAB graphics functionality at runtime.
+Warning: No display specified.  You will not be able to display graphics on the screen.
+Return from compile request is <<<0>>>

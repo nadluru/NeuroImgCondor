@@ -1,0 +1,19 @@
+# you will need to add all m files needed for your entry point target(s)
+transfer_input_files = BesselJ_RootsCyl.m,CreateROI.m,CylNeumanLePar_PGSE.m,CylNeumanLePerp_PGSE.m,DT_DesignMatrix.m,EstimateSigma.m,FSL2Protocol.m,FitLinearDT.m,GetB0.m,GetB_Values.m,GetFibreOrientation.m,GetParameterIndex.m,GetParameterStrings.m,GetScalingFactors.m,GetSearchGrid.m,GradDescDecode.m,GradDescEncode.m,GradDescLimits.m,GridSearchRician.m,LegendreGaussianIntegral.m,MakeDT_Matrix.m,MakeModel.m,NumFreeParams.m,PlotFittedModel.m,RemoveNegMeas.m,RicianLogLik.m,SaveAsNIfTI.m,SaveParamsAsNIfTI.m,SchemeToProtocol.m,SynthMeas.m,SynthMeasHinderedDiffusion_PGSE.m,SynthMeasIsoGPD.m,SynthMeasWatsonHinderedDiffusion_PGSE.m,SynthMeasWatsonSHCylNeuman_PGSE.m,SynthMeasWatsonSHCylSingleRadGPD.m,SynthMeasWatsonSHCylSingleRadGPD_PGSE.m,SynthMeasWatsonSHCylSingleRadIsoVIsoDot_GPD.m,SynthMeasWatsonSHCylSingleRadIsoVIsoDot_GPD_B0.m,SynthMeasWatsonSHCylSingleRadIsoV_GPD.m,SynthMeasWatsonSHCylSingleRadIsoV_GPD_B0.m,SynthMeasWatsonSHCylSingleRadTortGPD.m,SynthMeasWatsonSHCylSingleRadTortIsoVIsoDot_GPD.m,SynthMeasWatsonSHCylSingleRadTortIsoVIsoDot_GPD_B0.m,SynthMeasWatsonSHCylSingleRadTortIsoV_GPD.m,SynthMeasWatsonSHCylSingleRadTortIsoV_GPD_B0.m,SynthMeasWatsonSHStickIsoVIsoDot_B0.m,SynthMeasWatsonSHStickIsoV_B0.m,SynthMeasWatsonSHStickTortIsoVIsoDot_B0.m,SynthMeasWatsonSHStickTortIsoV_B0.m,ThreeStageFittingVoxel.m,VoxelDataViewer.m,WatsonHinderedDiffusionCoeff.m,WatsonSHCoeff.m,batch_fitting.m,batch_fitting_single.m,erfi.m,fmincon_fix.m,fobj_rician.m,fobj_rician_fix.m,fobj_rician_st.m,logbesseli0.m,NODDIFittingCondor.m
+# list out your entry point(s)
+# if you require multiple executables, give the following a comma separated list
+arguments = --mtargets=NODDIFittingCondor.m --mfiles=BesselJ_RootsCyl.m,CreateROI.m,CylNeumanLePar_PGSE.m,CylNeumanLePerp_PGSE.m,DT_DesignMatrix.m,EstimateSigma.m,FSL2Protocol.m,FitLinearDT.m,GetB0.m,GetB_Values.m,GetFibreOrientation.m,GetParameterIndex.m,GetParameterStrings.m,GetScalingFactors.m,GetSearchGrid.m,GradDescDecode.m,GradDescEncode.m,GradDescLimits.m,GridSearchRician.m,LegendreGaussianIntegral.m,MakeDT_Matrix.m,MakeModel.m,NumFreeParams.m,PlotFittedModel.m,RemoveNegMeas.m,RicianLogLik.m,SaveAsNIfTI.m,SaveParamsAsNIfTI.m,SchemeToProtocol.m,SynthMeas.m,SynthMeasHinderedDiffusion_PGSE.m,SynthMeasIsoGPD.m,SynthMeasWatsonHinderedDiffusion_PGSE.m,SynthMeasWatsonSHCylNeuman_PGSE.m,SynthMeasWatsonSHCylSingleRadGPD.m,SynthMeasWatsonSHCylSingleRadGPD_PGSE.m,SynthMeasWatsonSHCylSingleRadIsoVIsoDot_GPD.m,SynthMeasWatsonSHCylSingleRadIsoVIsoDot_GPD_B0.m,SynthMeasWatsonSHCylSingleRadIsoV_GPD.m,SynthMeasWatsonSHCylSingleRadIsoV_GPD_B0.m,SynthMeasWatsonSHCylSingleRadTortGPD.m,SynthMeasWatsonSHCylSingleRadTortIsoVIsoDot_GPD.m,SynthMeasWatsonSHCylSingleRadTortIsoVIsoDot_GPD_B0.m,SynthMeasWatsonSHCylSingleRadTortIsoV_GPD.m,SynthMeasWatsonSHCylSingleRadTortIsoV_GPD_B0.m,SynthMeasWatsonSHStickIsoVIsoDot_B0.m,SynthMeasWatsonSHStickIsoV_B0.m,SynthMeasWatsonSHStickTortIsoVIsoDot_B0.m,SynthMeasWatsonSHStickTortIsoV_B0.m,ThreeStageFittingVoxel.m,VoxelDataViewer.m,WatsonHinderedDiffusionCoeff.m,WatsonSHCoeff.m,batch_fitting.m,batch_fitting_single.m,erfi.m,fmincon_fix.m,fobj_rician.m,fobj_rician_fix.m,fobj_rician_st.m,logbesseli0.m,NODDIFittingCondor.m --version=R2011b
+
+#You likely will not need to change below here
+executable = /usr/share/chtc-utils/chtc_mcc/CompileMatlabRemote.pl
+universe = vanilla
+log = .condor_log.13273
+output = .condor_out.13273
+error = .condor_error.13273
+getenv = false
+should_transfer_files   = yes
+when_to_transfer_output = on_exit
++IsMatlabBuildJob = true
+#we assume both compilers exist on each sl6 build box
+requirements =  IsMatlabBuildSlot && (OpSysAndVer =?= "SL6")
+Queue

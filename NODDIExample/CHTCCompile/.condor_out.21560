@@ -1,0 +1,106 @@
+Compiler will be from Matlab R2011b
+ mfiles=NODDIFiles.tar.gz mtargets=NODDIFittingCondor, version=R2011b
+/usr/local/MATLAB/R2011b/bin/mcc
+/usr/local/MATLAB/R2011b/bin/mex
+MCC compiletime path = <<<</home/gcc434/bin:.:/usr/local/MATLAB/R2011b/bin:/bin:/usr/bin:/usr/X11R6/bin>>>>
+_CONDOR_ANCESTOR_14544=14546:1412371012:4032801881
+_CONDOR_ANCESTOR_14546=22487:1415637465:2116529724
+_CONDOR_ANCESTOR_22487=22491:1415637466:2027769195
+TEMP=/var/lib/condor/execute/slot1/dir_22487
+_CONDOR_SCRATCH_DIR=/var/lib/condor/execute/slot1/dir_22487
+_CONDOR_SLOT=slot1
+BATCH_SYSTEM=HTCondor
+TMPDIR=/var/lib/condor/execute/slot1/dir_22487
+_CONDOR_CHIRP_CONFIG=/var/lib/condor/execute/slot1/dir_22487/.chirp_config
+_CONDOR_JOB_PIDS=
+TMP=/var/lib/condor/execute/slot1/dir_22487
+_CONDOR_JOB_AD=/var/lib/condor/execute/slot1/dir_22487/.job.ad
+_CONDOR_JOB_IWD=/var/lib/condor/execute/slot1/dir_22487
+_CHIRP_DELAYED_UPDATE_PREFIX=Chirp*
+_CONDOR_MACHINE_AD=/var/lib/condor/execute/slot1/dir_22487/.machine.ad
+PATH=/home/gcc434/bin:.:/usr/local/MATLAB/R2011b/bin:/bin:/usr/bin:/usr/X11R6/bin
+USER=bt
+TERM=xterm
+SHELL=/bin/bash
+LOGNAME=bt
+HOME=/var/lib/condor/execute/slot1/dir_22487
+PWD=/tmp
+HOSTNAME=submit.chtc.wisc.edu
+SSH_TTY=/dev/pts/4
+LANG=en_US.UTF-8
+LD_LIBRARY_PATH=/home/gcc434/mpfr2_3_1/lib:/home/gcc434/gmp4_1_2/lib
+Linux matlab-build-1.chtc.wisc.edu 2.6.32-358.11.1.el6.x86_64 #1 SMP Tue Jun 11 17:23:30 CDT 2013 x86_64 x86_64 x86_64 GNU/Linux
+/home/gcc434/bin/gcc
+total 364K
+-rw-r--r-- 1 slot1 slot1 3.7K Nov  9 17:22 batch_fitting.m
+-rw-r--r-- 1 slot1 slot1 2.8K Nov  9 17:22 batch_fitting_single.m
+-rw-r--r-- 1 slot1 slot1  829 Nov  9 17:22 BesselJ_RootsCyl.m
+-rwx------ 1 slot1 slot1 1.7K Nov  9 19:04 ChunkROICondor.m
+-rwxr-xr-x 1 slot1 slot1 4.7K Nov 10 10:37 condor_exec.exe
+-rw-r--r-- 1 slot1 slot1  182 Nov 10 10:37 _condor_stderr
+-rw-r--r-- 1 slot1 slot1 1.5K Nov 10 10:37 _condor_stdout
+-rw-r--r-- 1 slot1 slot1 2.0K Nov  9 17:22 CreateROI.m
+-rw-r--r-- 1 slot1 slot1 1.3K Nov  9 17:22 CylNeumanLePar_PGSE.m
+-rw-r--r-- 1 slot1 slot1 3.8K Nov  9 17:22 CylNeumanLePerp_PGSE.m
+-rw-r--r-- 1 slot1 slot1 4.1K Nov  9 17:22 DT_DesignMatrix.m
+-rw-r--r-- 1 slot1 slot1  840 Nov  9 17:22 erfi.m
+-rw-r--r-- 1 slot1 slot1  895 Nov  9 17:22 EstimateSigma.m
+-rw-r--r-- 1 slot1 slot1 1.4K Nov  9 17:22 FitLinearDT.m
+-rw-r--r-- 1 slot1 slot1  906 Nov  9 17:22 fmincon_fix.m
+-rw-r--r-- 1 slot1 slot1 1.1K Nov  9 17:22 fobj_rician_fix.m
+-rw-r--r-- 1 slot1 slot1 1.5K Nov  9 17:22 fobj_rician.m
+-rw-r--r-- 1 slot1 slot1 2.3K Nov  9 17:22 fobj_rician_st.m
+-rw-r--r-- 1 slot1 slot1 1.9K Nov  9 17:22 FSL2Protocol.m
+-rw-r--r-- 1 slot1 slot1  287 Nov  9 17:22 GetB0.m
+-rw-r--r-- 1 slot1 slot1  850 Nov  9 17:22 GetB_Values.m
+-rw-r--r-- 1 slot1 slot1  448 Nov  9 17:22 GetFibreOrientation.m
+-rw-r--r-- 1 slot1 slot1  458 Nov  9 17:22 GetParameterIndex.m
+-rw-r--r-- 1 slot1 slot1 1.7K Nov  9 17:22 GetParameterStrings.m
+-rw-r--r-- 1 slot1 slot1 1.5K Nov  9 17:22 GetScalingFactors.m
+-rw-r--r-- 1 slot1 slot1  20K Nov  9 17:22 GetSearchGrid.m
+-rw-r--r-- 1 slot1 slot1 1.5K Nov  9 17:22 GradDescDecode.m
+-rw-r--r-- 1 slot1 slot1 1.5K Nov  9 17:22 GradDescEncode.m
+-rw-r--r-- 1 slot1 slot1 2.0K Nov  9 17:22 GradDescLimits.m
+-rw-r--r-- 1 slot1 slot1 5.1K Nov  9 17:22 GridSearchRician.m
+-rw-r--r-- 1 slot1 slot1 5.1K Nov  9 17:22 LegendreGaussianIntegral.m
+-rw-r--r-- 1 slot1 slot1  873 Nov  9 17:22 logbesseli0.m
+-rw-r--r-- 1 slot1 slot1  358 Nov  9 17:22 MakeDT_Matrix.m
+-rw-r--r-- 1 slot1 slot1 2.5K Nov  9 17:22 MakeModel.m
+-rw-rw-r-- 1 slot1 slot1  34K Nov 10 10:37 NODDIFiles.tar.gz
+-rwx------ 1 slot1 slot1 1.9K Nov 10  2014 NODDIFittingCondor.m
+-rw-r--r-- 1 slot1 slot1  295 Nov  9 17:22 NumFreeParams.m
+-rwx------ 1 slot1 slot1 2.4K Nov  9 19:04 PackageChunkROICondor.m
+-rw-r--r-- 1 slot1 slot1 1.8K Nov  9 17:22 PlotFittedModel.m
+-rw-r--r-- 1 slot1 slot1 1.8K Nov  9 17:22 RemoveNegMeas.m
+-rw-r--r-- 1 slot1 slot1  730 Nov  9 17:22 RicianLogLik.m
+-rw-r--r-- 1 slot1 slot1  687 Nov  9 17:22 SaveAsNIfTI.m
+-rw-r--r-- 1 slot1 slot1 5.0K Nov  9 17:22 SaveParamsAsNIfTI.m
+-rw-r--r-- 1 slot1 slot1  760 Nov  9 17:22 SchemeToProtocol.m
+-rw-r--r-- 1 slot1 slot1 1.9K Nov  9 17:22 SynthMeasHinderedDiffusion_PGSE.m
+-rw-r--r-- 1 slot1 slot1 2.5K Nov  9 17:22 SynthMeasIsoGPD.m
+-rw-r--r-- 1 slot1 slot1  15K Nov  9 17:22 SynthMeas.m
+-rw-r--r-- 1 slot1 slot1 2.1K Nov  9 17:22 SynthMeasWatsonHinderedDiffusion_PGSE.m
+-rw-r--r-- 1 slot1 slot1 4.6K Nov  9 17:22 SynthMeasWatsonSHCylNeuman_PGSE.m
+-rw-r--r-- 1 slot1 slot1 2.4K Nov  9 17:22 SynthMeasWatsonSHCylSingleRadGPD.m
+-rw-r--r-- 1 slot1 slot1 3.1K Nov  9 17:22 SynthMeasWatsonSHCylSingleRadGPD_PGSE.m
+-rw-r--r-- 1 slot1 slot1 2.0K Nov  9 17:22 SynthMeasWatsonSHCylSingleRadIsoV_GPD_B0.m
+-rw-r--r-- 1 slot1 slot1 2.2K Nov  9 17:22 SynthMeasWatsonSHCylSingleRadIsoV_GPD.m
+-rw-r--r-- 1 slot1 slot1 2.1K Nov  9 17:22 SynthMeasWatsonSHCylSingleRadIsoVIsoDot_GPD_B0.m
+-rw-r--r-- 1 slot1 slot1 2.2K Nov  9 17:22 SynthMeasWatsonSHCylSingleRadIsoVIsoDot_GPD.m
+-rw-r--r-- 1 slot1 slot1 2.1K Nov  9 17:22 SynthMeasWatsonSHCylSingleRadTortGPD.m
+-rw-r--r-- 1 slot1 slot1 2.1K Nov  9 17:22 SynthMeasWatsonSHCylSingleRadTortIsoV_GPD_B0.m
+-rw-r--r-- 1 slot1 slot1 2.3K Nov  9 17:22 SynthMeasWatsonSHCylSingleRadTortIsoV_GPD.m
+-rw-r--r-- 1 slot1 slot1 2.2K Nov  9 17:22 SynthMeasWatsonSHCylSingleRadTortIsoVIsoDot_GPD_B0.m
+-rw-r--r-- 1 slot1 slot1 2.3K Nov  9 17:22 SynthMeasWatsonSHCylSingleRadTortIsoVIsoDot_GPD.m
+-rw-r--r-- 1 slot1 slot1 1.9K Nov  9 17:22 SynthMeasWatsonSHStickIsoV_B0.m
+-rw-r--r-- 1 slot1 slot1 2.1K Nov  9 17:22 SynthMeasWatsonSHStickIsoVIsoDot_B0.m
+-rw-r--r-- 1 slot1 slot1 2.0K Nov  9 17:22 SynthMeasWatsonSHStickTortIsoV_B0.m
+-rw-r--r-- 1 slot1 slot1 2.2K Nov  9 17:22 SynthMeasWatsonSHStickTortIsoVIsoDot_B0.m
+-rw-r--r-- 1 slot1 slot1 6.8K Nov 10  2014 ThreeStageFittingVoxel.m
+-rw-r--r-- 1 slot1 slot1 1.9K Nov  9 17:22 VoxelDataViewer.m
+-rw-r--r-- 1 slot1 slot1 2.2K Nov  9 17:22 WatsonHinderedDiffusionCoeff.m
+-rw-r--r-- 1 slot1 slot1 7.3K Nov  9 17:22 WatsonSHCoeff.m
+About to do this compile: <<mcc -m -R -singleCompThread -R -nodisplay -R -nojvm NODDIFittingCondor>>
+Warning: You have specified '-R -nojvm', which may restrict or eliminate MATLAB graphics functionality at runtime.
+Warning: No display specified.  You will not be able to display graphics on the screen.
+Return from compile request is <<<0>>>

@@ -1,3 +1,11 @@
+% Om Shanti. Om Sai Ram. Om Namah Shivayah. Madison, WI. 11/07/2016. 10:12
+% p.m.
+% Om Shanti. Om Sai Ram. Om Namah Shivayah. Madison, WI. 11/07/2016. 1:24
+% p.m.
+% Om Shanti. Om Sai Ram. Om Namah Shivayah. Madison, WI. 11/07/2016. 10:00
+% a.m.
+% Om Shanti. Om Sai Ram. Om Namah Shivayah. Madison, WI. 11/07/2016. 3:07
+% a.m.
 function CreateROI(dwifile, maskfile, outputfile)
 %
 % function CreateROI(dwifile, maskfile)
@@ -67,6 +75,17 @@ for i=1:xsize
     for j=1:ysize
         for k=1:zsize
             if mask(i,j,k) > 0
+            %if (mask(i,j,k) > 0 & dwi(:,i,j,k) > 0)
+            %if(mask(i, j, k) > 0 && min(dwi(:, i, j, k)) > 0)
+            %if(mask(i, j, k) > 0 && min(squeeze(dwi(:, i, j, k))) >= 5)
+                %                 for v = 1:size(dwi, 1)
+                %                     if(dwi(v, i, j, k)) <= 0
+                %                         break;
+                %                     end
+                %                 end
+                %                 if(v < size(dwi, 1))
+                %                     continue;
+                %                 end
                 count = count + 1;
                 roi(count,:) = dwi(:,i,j,k);
                 idx(count,:) = [i j k];
@@ -78,6 +97,8 @@ end
 % save the ROI
 fprintf('saving the output ROI as %s\n', outputfile);
 save(outputfile, 'roi', 'mask', 'idx');
+% Om Shanti. Om Sai Ram. February 06, 2016. 1:16 p.m.
+% save(outputfile, 'roi', 'mask', 'idx', '-v7.3');
 
 disp('done');
 

@@ -1,4 +1,6 @@
+% Om Shanti. Om Sai Ram. March 10, 2015. 1:15 p.m. Madison, WI.
 function PackageChunkROICondor(ROIFile, model, progressStepSize, inRoot, outputFile)
+% function PackageChunkROICondor(ROIFile, model, progressStepSize, inRoot, fitChunkName, outputFile)
 
 %
 % function batch_fitting(roifile, protocol, model, outputfile, poolsize)
@@ -47,14 +49,26 @@ for splitStart = currentSplitStart:progressStepSize:numOfVoxels
     if splitEnd > numOfVoxels
         splitEnd = numOfVoxels;
     end
-    load(sprintf('%s/Job%d/NODDIFitChunk.mat', inRoot, numChunks + 1));
-    gsps(splitStart:splitEnd, :) = NODDIFitChunk.gsps;
-    fobj_gs(splitStart:splitEnd) = NODDIFitChunk.fobj_gs;
-    mlps(splitStart:splitEnd, :) = NODDIFitChunk.mlps;
-    fobj_ml(splitStart:splitEnd) = NODDIFitChunk.fobj_ml;
-    error_code(splitStart:splitEnd) = NODDIFitChunk.error_code;
+    % load(sprintf('%s/Job%d/NODDIFitChunk.mat', inRoot, numChunks + 1));
+    % load(sprintf('%s/Job%d/%s', inRoot, numChunks + 1, fitChunkName)); %
+    % See below...it seems converting strings to variables is not a good
+    % idea...
+%     gsps(splitStart:splitEnd, :) = NODDIFitChunk.gsps;
+%     fobj_gs(splitStart:splitEnd) = NODDIFitChunk.fobj_gs;
+%     mlps(splitStart:splitEnd, :) = NODDIFitChunk.mlps;
+%     fobj_ml(splitStart:splitEnd) = NODDIFitChunk.fobj_ml;
+%     error_code(splitStart:splitEnd) = NODDIFitChunk.error_code;
+%     if model.noOfStages == 3
+%         mcmcps(splitStart:splitEnd, :, :) = NODDIFitChunk.mcmcps;
+%     end
+    load(sprintf('%s/Job%d/noddi_fit_chunk.mat', inRoot, numChunks + 1));
+    gsps(splitStart:splitEnd, :) = noddi_fit_chunk.gsps;
+    fobj_gs(splitStart:splitEnd) = noddi_fit_chunk.fobj_gs;
+    mlps(splitStart:splitEnd, :) = noddi_fit_chunk.mlps;
+    fobj_ml(splitStart:splitEnd) = noddi_fit_chunk.fobj_ml;
+    error_code(splitStart:splitEnd) = noddi_fit_chunk.error_code;
     if model.noOfStages == 3
-        mcmcps(splitStart:splitEnd, :, :) = NODDIFitChunk.mcmcps;
+        mcmcps(splitStart:splitEnd, :, :) = noddi_fit_chunk.mcmcps;
     end
     numChunks = numChunks + 1;
 end

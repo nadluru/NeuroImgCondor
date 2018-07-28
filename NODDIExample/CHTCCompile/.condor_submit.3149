@@ -1,0 +1,19 @@
+# you will need to add all m files needed for your entry point target(s)
+transfer_input_files = NODDIFiles.tar.gz
+# list out your entry point(s)
+# if you require multiple executables, give the following a comma separated list
+arguments = --mtargets=NODDIFittingCondor.m --mfiles=NODDIFiles.tar.gz --version=R2011b
+
+#You likely will not need to change below here
+executable = /usr/share/chtc-utils/chtc_mcc/CompileMatlabRemote.pl
+universe = vanilla
+log = .condor_log.3149
+output = .condor_out.3149
+error = .condor_error.3149
+getenv = false
+should_transfer_files   = yes
+when_to_transfer_output = on_exit
++IsMatlabBuildJob = true
+#we assume both compilers exist on each sl6 build box
+requirements =  IsMatlabBuildSlot && (OpSysAndVer =?= "SL6")
+Queue

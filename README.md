@@ -1,4 +1,9 @@
-NeuroImgMatlabCondor
+NeuroImgCondor
 ====================
 
-Neuroimage processing and analysis using Matlab on condor computing grid
+Neuroimage processing and analysis using Matlab, and other languages on condor computing grid.
+
+# Connectraphy example
+```bash
+ConnectographyExample/NonLocalCondorCall.sh > nonlocalcondor.dag
+```
